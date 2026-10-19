@@ -712,7 +712,7 @@
       "medium": "도자, 조명 부품",
       "size": "Ø 26 × 81cm",
       "desc": "",
-      "icon": "",
+      "icon": "images/cutouts/wmvfedklimqv8-7ay9.png",
       "images": [
         {
           "src": "images/uploads/2026-10-19-1vhyma.jpg",
@@ -731,11 +731,15 @@
           "caption": ""
         }
       ],
-      "scale": 1.25,
+      "scale": 2.65,
       "x": 0.6303345695660896,
       "y": 0.5376069736227405,
       "type": "조명",
-      "scaleMode": "manual"
+      "scaleMode": "manual",
+      "cutout": true,
+      "thumb": "images/thumbs/wmvfedklimqv8-h5ju.webp",
+      "thumbOf": "images/cutouts/wmvfedklimqv8-7ay9.png",
+      "iconOrig": "images/uploads/2026-10-19-n0bu4y.png"
     }
   ],
   "cv": [
