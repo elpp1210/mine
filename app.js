@@ -244,7 +244,7 @@ document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var t
 function openWork(id){
   var w=DATA.works.find(function(x){return x.id===id});if(!w)return;
   var pics=(w.images||[]).slice();var cutIdx=-1;
-  if(w.icon&&!pics.some(function(p){return p.src===w.icon})){pics.push({src:w.icon,caption:""});cutIdx=pics.length-1}
+  if(w.icon&&!pics.length){pics.push({src:w.icon,caption:""});cutIdx=0}
   var defCap=[w.title,w.year,w.medium,w.size].filter(Boolean).join(", ");
   var mainImg=h("img",{alt:w.title||"",decoding:"async"});mainImg.addEventListener("error",function(){if(mainImg.dataset.full&&mainImg.src!==mainImg.dataset.full)mainImg.src=mainImg.dataset.full});
   var cap=h("p",{class:"work-cap"});
