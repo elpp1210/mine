@@ -515,6 +515,34 @@ function makeThumb(w){
   else p=fetch(sized(w.icon,320)).then(function(r){if(!r.ok)throw new Error("이미지를 줄이지 못했어요 ("+r.status+").");return r.blob()});
   return p.then(function(b){if(b.size>600000)return canvasThumb(b);return b}).then(function(b){return putBlob(thumbPath(w),b)}).then(function(path){w.thumb=path;w.thumbOf=w.icon;return path})}
 function needThumb(w){return w.icon&&(!w.thumb||w.thumbOf!==w.icon)}
+/* --- automatic background removal (runs in the admin's browser) --- */
+var BG=null;
+function loadBG(){if(BG)return BG;BG=import("https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.8/+esm").then(function(m){return m.removeBackground||m.default}).catch(function(e){BG=null;throw new Error("누끼 도구를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.")});return BG}
+function trimAlpha(blob){return new Promise(function(res){var url=URL.createObjectURL(blob),im=new Image();
+  im.onload=function(){var W=im.naturalWidth,H=im.naturalHeight,c=document.createElement("canvas");c.width=W;c.height=H;var x=c.getContext("2d");x.drawImage(im,0,0);
+    var d=x.getImageData(0,0,W,H).data,minX=W,minY=H,maxX=-1,maxY=-1;
+    for(var y=0;y<H;y+=2)for(var xx=0;xx<W;xx+=2){if(d[(y*W+xx)*4+3]>16){if(xx<minX)minX=xx;if(xx>maxX)maxX=xx;if(y<minY)minY=y;if(y>maxY)maxY=y}}
+    URL.revokeObjectURL(url);if(maxX<0){res(null);return}
+    var pad=8;minX=Math.max(0,minX-pad);minY=Math.max(0,minY-pad);maxX=Math.min(W-1,maxX+pad);maxY=Math.min(H-1,maxY+pad);
+    var o=document.createElement("canvas");o.width=maxX-minX+1;o.height=maxY-minY+1;o.getContext("2d").drawImage(c,minX,minY,o.width,o.height,0,0,o.width,o.height);
+    var cover=(o.width*o.height)/(W*H);o.toBlob(function(b){res({blob:b,cover:cover})},"image/png")};
+  im.onerror=function(){URL.revokeObjectURL(url);res(null)};im.src=url})}
+function srcBlob(w){var src=imgSrc(w.iconOrig||w.icon);
+  var u=(/^https:/.test(src)&&!PREVIEW[w.iconOrig||w.icon])?sized(w.iconOrig||w.icon,1200).replace("output=webp","output=png"):src;
+  return fetch(u).then(function(r){if(!r.ok)throw new Error("사진을 불러오지 못했어요 ("+r.status+").");return r.blob()})}
+function cutoutOne(w,onStep){
+  return loadBG().then(function(rb){onStep&&onStep("사진 불러오는 중");return srcBlob(w).then(function(b){onStep&&onStep("배경 지우는 중");return rb(b,{model:"isnet_fp16",output:{format:"image/png"}})})})
+  .then(trimAlpha).then(function(t){if(!t)throw new Error("작품을 찾지 못했어요.");
+    return putBlob("images/cutouts/"+w.id+"-"+Math.random().toString(36).slice(2,6)+".png",t.blob).then(function(path){
+      if(!w.iconOrig)w.iconOrig=w.icon;w.icon=path;w.cutout=true;return canvasThumb(t.blob).then(function(tb){return putBlob(thumbPath(w),tb)}).then(function(tp){w.thumb=tp;w.thumbOf=w.icon;return t})})})}
+function cutoutAll(btn,msg,done){
+  var todo=DATA.works.filter(function(w){return w.icon&&!w.cutout}),n=todo.length,ok=0,fail=[];if(!n){msg.textContent="모든 작업이 이미 누끼 아이콘이에요.";return}
+  btn.disabled=true;msg.textContent="누끼 도구 준비 중… (처음엔 1분쯤 걸려요)";
+  todo.reduce(function(p,w,i){return p.then(function(){return cutoutOne(w,function(st){msg.textContent=(i+1)+"/"+n+" ‘"+(w.title||"")+"’ "+st+"… 이 창을 닫지 말아 주세요."})
+    .then(function(){ok++;var nd=nodes[w.id];if(nd){var im=nd.el.querySelector("img");im.src=imgSrc(w.thumb);}markDirty("누끼")},function(e){fail.push(w.title||w.id)})})},Promise.resolve())
+  .then(function(){btn.disabled=false;
+    msg.textContent=ok+"개 누끼를 땄어요"+(fail.length?". 실패: "+fail.join(", "):"")+". 바탕화면에서 확인하고, 이상한 건 그 작업의 ‘원래 사진으로 되돌리기’를 누른 뒤 ‘저장하고 게시’를 눌러 주세요.";if(done)done()})}
+
 function lightenAll(btn,msg,done){
   var todo=DATA.works.filter(needThumb),n=todo.length,i=0,fail=0;if(!n){msg.textContent="모든 아이콘이 이미 가벼워요.";return}
   btn.disabled=true;msg.textContent="가볍게 만드는 중… 0/"+n;
@@ -528,6 +556,10 @@ function setStatus(msg,kind){if(admStatus){admStatus.textContent=msg;admStatus.c
 /* --- works tab --- */
 function drawWorks(main){
   if(!admSel||!DATA.works.find(function(w){return w.id===admSel}))admSel=DATA.works[0]?DATA.works[0].id:null;
+  var raw=DATA.works.filter(function(w){return w.icon&&!w.cutout}).length;
+  if(raw){var cb=h("button",{class:"btn sm primary"},"누끼 자동으로 따기"),cm=h("span",{text:"누끼가 아닌 아이콘이 "+raw+"개 있어요. 버튼을 누르면 이 브라우저에서 배경을 하나씩 지워요. 한 개에 10초~1분쯤 걸려요."});
+    cb.addEventListener("click",function(){cutoutAll(cb,cm)});
+    main.appendChild(h("div",{class:"notice",style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},cm,cb))}
   var heavy=DATA.works.filter(needThumb).length;
   if(heavy){var lb=h("button",{class:"btn sm primary"},"가볍게 만들기"),lm=h("span",{text:"바탕화면 아이콘 "+heavy+"개가 원본 사진이라 무거워요. 작은 썸네일을 만들어 두면 첫 화면이 빨리 떠요."});
     lb.addEventListener("click",function(){lightenAll(lb,lm,function(){renderDesk()})});
@@ -563,9 +595,12 @@ function buildWorkForm(form,w){
   /* icon */
   var icPrev=h("img",{src:imgSrc(w.icon),alt:"아이콘 미리보기"});
   var icMsg=h("div",{class:"hint",text:"배경을 지운 투명 PNG가 가장 잘 어울려요. 바탕화면 아이콘과 작업 창에 쓰입니다."});
-  function doIcon(file){icMsg.textContent="올리는 중…";upload(file,1200,true).then(function(id){w.icon=id;delete w.sample;icPrev.src=imgSrc(id);
+  function doIcon(file){icMsg.textContent="올리는 중…";upload(file,1200,true).then(function(id){w.icon=id;w.cutout=true;delete w.iconOrig;delete w.sample;icPrev.src=imgSrc(id);
     icMsg.textContent="아이콘 썸네일 만드는 중…";return makeThumb(w).catch(function(){w.thumb="";})}).then(function(){refreshDesk();icMsg.textContent="올렸어요.";markDirty("아이콘")}).catch(function(e){icMsg.textContent=e.message})}
-  var drop=h("div",{class:"drop"},icPrev,h("div",{class:"acts"},h("button",{class:"btn sm",onclick:function(){filePick(false,function(f){if(f[0])doIcon(f[0])})}},w.icon?"누끼 이미지 바꾸기":"누끼 이미지 올리기"),icMsg));
+  var drop=h("div",{class:"drop"},icPrev,h("div",{class:"acts"},h("button",{class:"btn sm",onclick:function(){filePick(false,function(f){if(f[0])doIcon(f[0])})}},w.icon?"누끼 이미지 바꾸기":"누끼 이미지 올리기"),
+    h("button",{class:"btn sm",onclick:function(e){var b=e.currentTarget;b.disabled=true;cutoutOne(w,function(st){icMsg.textContent=st+"…"}).then(function(){icPrev.src=imgSrc(w.icon);refreshDesk();icMsg.textContent="누끼를 땄어요. 마음에 들면 ‘저장하고 게시’를 눌러 주세요.";markDirty("누끼")},function(er){icMsg.textContent=er.message}).then(function(){b.disabled=false})}},"자동 누끼 따기"),
+    w.iconOrig?h("button",{class:"btn sm",onclick:function(){w.icon=w.iconOrig;delete w.iconOrig;delete w.cutout;w.thumb="";icPrev.src=imgSrc(w.icon);refreshDesk();icMsg.textContent="원래 사진으로 되돌렸어요.";markDirty("아이콘")}},"원래 사진으로 되돌리기"):null,
+    icMsg));
   dnd(drop,function(fs){doIcon(fs[0])});
   form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"바탕화면 아이콘 (누끼 이미지)"}),drop));
 
