@@ -617,7 +617,7 @@ function buildWorkForm(form,w){
   form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"바탕화면 아이콘 (누끼 이미지)"}),drop));
 
   /* icon size */
-  var rng=h("input",{type:"range",id:"sz-"+w.id,min:"0.3",max:"3",step:"0.05",style:"flex:1;min-width:140px"});rng.value=iconScale(w);
+  var rng=h("input",{type:"range",id:"sz-"+w.id,min:"0.3",max:"7",step:"0.05",style:"flex:1;min-width:140px"});rng.value=iconScale(w);
   var szOut=h("span",{class:"hint",style:"min-width:150px"});
   var autoBtn=h("button",{class:"btn sm"},"작업 크기로 맞추기");
   function szLabel(){var a=autoScale(w);szOut.textContent=w.scaleMode==="manual"?"직접 조절 ("+Math.round(iconScale(w)*100)+"%)":a?"작업 크기 기준 ("+Math.round(a*100)+"%)":"기본 크기";autoBtn.disabled=w.scaleMode!=="manual"}
