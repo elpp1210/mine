@@ -12,7 +12,9 @@
 
 ## 파일 구성
 
-- `index.html`: 사이트 화면 (바탕화면, 창, 드래그)
+- `index.html`: 사이트를 불러오는 첫 페이지 (항상 최신 코드를 불러옵니다)
+- `app.js`, `app.css`: 사이트 화면과 관리 화면 코드
+- `version.txt`: 코드를 바꿀 때마다 올리는 버전 번호
 - `content/site.json`: 작업, 이력, 스테이트먼트, 배경색 등 모든 내용
 - `images/`: 이미지 파일
 - `CNAME`: 연결할 도메인 (byunjiwon.com)
