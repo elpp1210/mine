@@ -36,8 +36,8 @@
         }
       ],
       "scale": 5.95,
-      "x": 0.9999,
-      "y": 0.983,
+      "x": 0.9986,
+      "y": 0.9764,
       "thumb": "images/thumbs/w01-bujw.webp",
       "thumbOf": "images/cutouts/w01-h34f.png",
       "iconOrig": "https://github.com/user-attachments/assets/25ac258b-76f8-47a7-a499-3e701bfee765",
@@ -179,8 +179,8 @@
         }
       ],
       "scale": 1.85,
-      "x": 0.2217,
-      "y": 0.6443,
+      "x": 0.2501,
+      "y": 0.5804,
       "thumb": "images/thumbs/w06-x1bi.webp",
       "thumbOf": "images/uploads/2026-10-19-lvrkty.png",
       "cutout": true,
@@ -339,8 +339,8 @@
         }
       ],
       "scale": 2.05,
-      "x": 0.863,
-      "y": 0.0179,
+      "x": 0.8295,
+      "y": 0,
       "thumb": "images/thumbs/w12-0pxk.webp",
       "thumbOf": "images/cutouts/w12-8hm6.png",
       "iconOrig": "https://github.com/user-attachments/assets/a35a6710-e5dd-4ec4-8665-109b7be2b7a9",
@@ -366,13 +366,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
-      "x": 0.7229,
-      "y": 0.3,
+      "scale": 1.35,
+      "x": 0.2109,
+      "y": 0.5846,
       "thumb": "images/thumbs/w13-osqt.webp",
       "thumbOf": "images/cutouts/w13-ddp5.png",
       "iconOrig": "https://github.com/user-attachments/assets/bbde0765-e890-4e66-9605-44de4a28fd57",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w14",
@@ -416,7 +417,7 @@
           "caption": ""
         }
       ],
-      "scale": 2.55,
+      "scale": 2.1,
       "x": 0.0657,
       "y": 0.5,
       "thumb": "images/thumbs/w15-6rvz.webp",
@@ -535,13 +536,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
-      "x": 0.5914,
-      "y": 0.5,
+      "scale": 2.2,
+      "x": 0.2422,
+      "y": 0.0174,
       "thumb": "images/thumbs/w19-uf94.webp",
       "thumbOf": "images/cutouts/w19-fzbo.png",
       "iconOrig": "https://github.com/user-attachments/assets/562f76d3-ad76-4ed3-a2dd-8e386eb24704",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w20",
@@ -617,7 +619,7 @@
           "caption": ""
         }
       ],
-      "scale": 1.35,
+      "scale": 1.05,
       "x": 0,
       "y": 0.4048,
       "thumb": "images/thumbs/w22-mdeq.webp",
@@ -732,8 +734,8 @@
         }
       ],
       "scale": 2.65,
-      "x": 0.6303345695660896,
-      "y": 0.5376069736227405,
+      "x": 0.6221,
+      "y": 0.1022,
       "type": "조명",
       "scaleMode": "manual",
       "cutout": true,
