@@ -334,7 +334,11 @@ function renderDesk(){
   DATA.works.forEach(function(w){
     var s=Math.round(BASE*iconScale(w));
     var el=h("button",{class:"icon",style:"--s:"+s+"px","aria-label":w.title+(w.year?", "+w.year:"")+" 열기"},
-      h("span",{class:"pic"},(function(){var im=h("img",{src:w.thumb?imgSrc(w.thumb):sized(w.icon,240),alt:"",draggable:"false",decoding:"async"});im.addEventListener("load",function(){im.classList.add("ok")});fallbackImg(im,w.icon);if(im.complete&&im.naturalWidth)im.classList.add("ok");return im})()),
+      h("span",{class:"pic"},(function(){var im=h("img",{src:w.thumb?imgSrc(w.thumb):sized(w.icon,240),alt:"",draggable:"false",decoding:"async"});var upgraded=false;im.addEventListener("load",function(){
+      var need=Math.round(BASE*iconScale(w)*(window.devicePixelRatio||1));
+      if(!upgraded&&w.icon&&Math.max(im.naturalWidth,im.naturalHeight)<need*0.95){upgraded=true;var full=imgSrc(w.icon);var hi=/^https:/.test(full)?sized(w.icon,Math.min(1600,need)):full;
+        var pre=new Image();pre.onload=function(){im.src=hi};pre.src=hi}
+      im.classList.add("ok")});fallbackImg(im,w.icon);if(im.complete&&im.naturalWidth)im.classList.add("ok");return im})()),
       h("span",{class:"lab",text:w.title||"제목 없음"}));
     nodes[w.id]={el:el,x:0,y:0,vx:0,vy:0,w:w};
     attachDrag(el,w);
@@ -513,14 +517,14 @@ function upload(file,max,forcePng){
 function putBlob(p,b){return blobB64(b).then(function(c){return ghApi("PUT",p,{message:"아이콘 썸네일",content:c,branch:GH.branch})}).then(function(){PREVIEW[p]=URL.createObjectURL(b);return p})}
 function thumbPath(w){return "images/thumbs/"+w.id+"-"+Math.random().toString(36).slice(2,6)+".webp"}
 function canvasThumb(blob){return new Promise(function(res,rej){var url=URL.createObjectURL(blob),im=new Image();
-  im.onload=function(){var r=Math.min(1,320/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*r);c.height=Math.round(im.naturalHeight*r);
-    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){b?res(b):rej(new Error("썸네일을 만들지 못했어요."))},"image/webp",.8)};
+  im.onload=function(){var r=Math.min(1,640/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*r);c.height=Math.round(im.naturalHeight*r);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){b?res(b):rej(new Error("썸네일을 만들지 못했어요."))},"image/webp",.86)};
   im.onerror=function(){URL.revokeObjectURL(url);rej(new Error("썸네일을 만들지 못했어요."))};im.src=url})}
 function makeThumb(w){
   var src=imgSrc(w.icon);var p;
   if(PREVIEW[w.icon]||/^blob:|^data:/.test(src)||!/^https:/.test(src))p=fetch(src).then(function(r){if(!r.ok)throw new Error("이미지를 읽지 못했어요.");return r.blob()}).then(canvasThumb);
-  else p=fetch(sized(w.icon,320)).then(function(r){if(!r.ok)throw new Error("이미지를 줄이지 못했어요 ("+r.status+").");return r.blob()});
-  return p.then(function(b){if(b.size>600000)return canvasThumb(b);return b}).then(function(b){return putBlob(thumbPath(w),b)}).then(function(path){w.thumb=path;w.thumbOf=w.icon;return path})}
+  else p=fetch(sized(w.icon,640)).then(function(r){if(!r.ok)throw new Error("이미지를 줄이지 못했어요 ("+r.status+").");return r.blob()});
+  return p.then(function(b){if(b.size>900000)return canvasThumb(b);return b}).then(function(b){return putBlob(thumbPath(w),b)}).then(function(path){w.thumb=path;w.thumbOf=w.icon;return path})}
 function needThumb(w){return w.icon&&(!w.thumb||w.thumbOf!==w.icon)}
 /* --- automatic background removal (runs in the admin's browser) --- */
 var BG=null;
