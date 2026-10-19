@@ -34,6 +34,11 @@ button,input,textarea,select{font:inherit;color:inherit}
 .mb-btn:hover,.mb-btn[aria-expanded="true"]{background:color-mix(in srgb,var(--ink) 9%,transparent)}
 .mb-name{font-weight:600}
 .mb-spacer{flex:1}
+.mb-spore{display:inline-flex;align-items:center;gap:5px;padding:3px 8px}
+.mb-spore svg{width:16px;height:16px}
+.mb-spore[aria-pressed="true"]{background:color-mix(in srgb,var(--ink) 12%,transparent)}
+.spores{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
+@media (max-width:720px){.mb-spore-t{display:none}}
 .mb-clock{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums;padding:0 6px;white-space:nowrap}
 .gear{position:fixed;z-index:450;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:40px;height:40px;border-radius:10px;border:0;padding:0;cursor:pointer;display:grid;place-items:center;
   background:linear-gradient(#9a9ca1,#6d7075);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 4px 12px rgba(0,0,0,.22);opacity:.55;transition:opacity .2s,transform .2s}

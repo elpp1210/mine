@@ -64,12 +64,14 @@ var nameBtn=h("button",{class:"mb-btn mb-name",onclick:function(){openInfo()}});
 var adminBtn=h("button",{class:"gear",hidden:true,"aria-label":"관리 열기",title:"관리",onclick:function(){openAdmin()}});
 adminBtn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#f4f4f2" fill-rule="evenodd" d="M10.3 2h3.4l.5 2.6c.6.2 1.2.5 1.7.9l2.5-.9 1.7 2.9-2 1.7c.1.6.1 1.2 0 1.8l2 1.7-1.7 2.9-2.5-.9c-.5.4-1.1.7-1.7.9l-.5 2.6h-3.4l-.5-2.6c-.6-.2-1.2-.5-1.7-.9l-2.5.9-1.7-2.9 2-1.7c-.1-.6-.1-1.2 0-1.8l-2-1.7 1.7-2.9 2.5.9c.5-.4 1.1-.7 1.7-.9zM12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z" transform="translate(0 1.2)"/></svg>';
 var clock=h("span",{class:"mb-clock","aria-hidden":"true"});
+var sporeBtn=h("button",{class:"mb-btn mb-spore","aria-pressed":"false","aria-label":"곰팡이 포자 퍼뜨리기",title:"포자"});
+sporeBtn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" fill="var(--paper)"/><path d="M12 5.2V3.4M12 20.6v-1.8M5.2 12H3.4M20.6 12h-1.8M7.2 7.2 5.9 5.9M18.1 18.1l-1.3-1.3M7.2 16.8l-1.3 1.3M18.1 5.9l-1.3 1.3M9.4 5.6 8.9 4.1M15.1 19.9l-.5-1.5M5.6 14.6l-1.5.5M19.9 8.9l-1.5.5M14.6 5.6l.5-1.5M8.9 19.9l.5-1.5M5.6 9.4l-1.5-.5M19.9 15.1l-1.5-.5"/></g></svg><span class="mb-spore-t">포자</span>';
 var menubar=h("nav",{class:"menubar","aria-label":"메뉴"},h("div",{class:"row"},
   nameBtn,
   h("button",{class:"mb-btn",onclick:function(){openList()}},"작업"),
   h("button",{class:"mb-btn",onclick:function(){openCV()}},"이력"),
   h("button",{class:"mb-btn",onclick:function(){openStatement()}},"스테이트먼트"),
-  h("span",{class:"mb-spacer"}),clock));
+  h("span",{class:"mb-spacer"}),sporeBtn,clock));
 root.appendChild(desk);root.appendChild(menubar);root.appendChild(adminBtn);
 function renderName(){nameBtn.textContent=DATA.site.name||"작가 이름"}
 function tick(){var d=new Date();var days=["일","월","화","수","목","금","토"];
@@ -652,6 +654,45 @@ function openLogin(){
 function refreshAll(){applyBg();renderName();initPlaces();renderDesk();Object.keys(wins).forEach(function(k){if(k!=="login"&&k!=="admin")closeWin(k)})}
 
 window.addEventListener("beforeunload",function(e){if(dirty&&!saving){e.preventDefault();e.returnValue=""}});
+
+/* ---------- spores: mould spreading over the desktop surface, behind the works ---------- */
+(function(){
+  var cv=document.createElement("canvas");cv.className="spores";cv.setAttribute("aria-hidden","true");desk.insertBefore(cv,desk.firstChild);
+  var ctx=cv.getContext("2d"),dpr=Math.min(2,window.devicePixelRatio||1),W=0,H=0,on=false,raf=0,spores=[],popping=false,next=0,last=0;
+  var mouse={x:-1e4,y:-1e4};var MAX=420;var center,spread;
+  function fit(){W=desk.clientWidth;H=desk.clientHeight;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.width=W+"px";cv.style.height=H+"px";ctx.setTransform(dpr,0,0,dpr,0,0)}
+  function spike(cx,cy,r,t,a){r=Math.max(.5,r);ctx.globalAlpha=a;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(cx,cy,r,0,6.2832);ctx.fill();
+    ctx.lineWidth=1;ctx.strokeStyle="rgba(0,0,0,.32)";for(var i=0;i<16;i++){var an=i/16*6.2832,m=Math.sin(an*3.1+t*.002+i*.7)*.5+.5,L=3+3*m;
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(an)*r,cy+Math.sin(an)*r);ctx.lineTo(cx+Math.cos(an)*(r+L),cy+Math.sin(an)*(r+L));ctx.stroke()}
+    ctx.strokeStyle="rgba(0,0,0,.28)";ctx.beginPath();ctx.arc(cx,cy,r,0,6.2832);ctx.stroke();ctx.globalAlpha=1}
+  function spawn(n){for(var k=0;k<n&&spores.length<MAX;k++){
+    center.x=Math.min(W*.9,center.x+.9);center.y=Math.max(H*.25,center.y-.55);spread.x=Math.min(W*.95,spread.x+2.2);spread.y=Math.min(H*.7,spread.y+1.6);
+    var ok=false,x,y;for(var tr=0;tr<20&&!ok;tr++){var ang=Math.random()<.15?Math.random()*6.2832:-Math.PI/4+(Math.random()-.5)*1.2,d=Math.pow(Math.random(),.6);
+      x=center.x+Math.cos(ang)*d*spread.x;y=center.y+Math.sin(ang)*d*spread.y;ok=x>8&&x<W-8&&y>TOP+8&&y<H-8&&!spores.some(function(s){return (s.x-x)*(s.x-x)+(s.y-y)*(s.y-y)<300})}
+    if(ok)spores.push({x:x,y:y,ox:0,oy:0,r:8+Math.random()*4,b:performance.now(),p:0})}}
+  function frame(t){raf=0;ctx.clearRect(0,0,W,H);var dt=t-last;last=t;
+    if(on&&!popping&&t>next){spawn(spores.length<60?3:1);next=t+(spores.length<60?40:110+Math.random()*160)}
+    var R=narrow?120:180,P=narrow?34:56,alive=false;
+    spores.forEach(function(s){var dx=s.x-mouse.x,dy=s.y-mouse.y,d=Math.hypot(dx,dy),tx=0,ty=0;
+      if(d<R&&d>0){var f=(1-d/R)*P;tx=dx/d*f;ty=dy/d*f}s.ox+=(tx-s.ox)*.18;s.oy+=(ty-s.oy)*.18;
+      var age=Math.max(0,(t-s.b)/300),g=age>=1?1:Math.max(.05,age<.7?age/.7*1.2:1.2-(age-.7)/.3*.2);
+      if(s.p){var pa=(t-s.p)/260;if(pa<0){alive=true;spike(s.x+s.ox,s.y+s.oy,s.r*g,t,1);return}if(pa>=1){s.dead=1;return}alive=true;
+        var rr=s.r*(1+pa*.9);spike(s.x+s.ox,s.y+s.oy,rr,t,1-pa);ctx.strokeStyle="rgba(0,0,0,"+(.35*(1-pa))+")";
+        for(var i=0;i<6;i++){var an=i/6*6.2832+s.r,r1=rr+4+pa*14,r2=r1+5;ctx.beginPath();ctx.moveTo(s.x+s.ox+Math.cos(an)*r1,s.y+s.oy+Math.sin(an)*r1);ctx.lineTo(s.x+s.ox+Math.cos(an)*r2,s.y+s.oy+Math.sin(an)*r2);ctx.stroke()}return}
+      alive=true;spike(s.x+s.ox,s.y+s.oy,s.r*g,t,1)});
+    spores=spores.filter(function(s){return !s.dead});
+    if(popping&&!spores.length){popping=false;ctx.clearRect(0,0,W,H);return}
+    if(on||popping)raf=requestAnimationFrame(frame)}
+  function start(){fit();on=true;popping=false;spores=[];center={x:narrow?10:W*.06,y:H*.86};spread={x:30,y:20};last=next=performance.now();
+    spawn(14);sporeBtn.setAttribute("aria-pressed","true");sporeBtn.setAttribute("aria-label","포자 터뜨리기");if(!raf)raf=requestAnimationFrame(frame)}
+  function popAll(){on=false;popping=true;var now=performance.now();
+    spores.sort(function(a,b){return Math.hypot(a.x-mouse.x,a.y-mouse.y)-Math.hypot(b.x-mouse.x,b.y-mouse.y)});
+    spores.forEach(function(s,i){s.p=now+Math.min(700,i*3)+Math.random()*120});
+    sporeBtn.setAttribute("aria-pressed","false");sporeBtn.setAttribute("aria-label","곰팡이 포자 퍼뜨리기");if(!raf)raf=requestAnimationFrame(frame)}
+  sporeBtn.addEventListener("click",function(){var r=sporeBtn.getBoundingClientRect();mouse.x=r.left+r.width/2;mouse.y=r.bottom;if(on)popAll();else start()});
+  window.addEventListener("pointermove",function(e){mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});
+  window.addEventListener("resize",function(){if(on||popping){var oW=W,oH=H;fit();spores.forEach(function(s){s.x*=W/(oW||W);s.y*=H/(oH||H)})}});
+})();
 
 /* ---------- boot ---------- */
 applyBg();renderName();
