@@ -70,13 +70,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.4,
       "x": 0.1971,
       "y": 0.1,
       "thumb": "images/thumbs/w02-z3s4.webp",
       "thumbOf": "images/cutouts/w02-asvk.png",
       "iconOrig": "https://github.com/user-attachments/assets/ac4292ed-c6c7-451c-acbc-f72a663ab3e5",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w03",
@@ -123,13 +124,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.25,
       "x": 0.4029,
       "y": 0.2095,
       "thumb": "images/thumbs/w04-mcc0.webp",
       "thumbOf": "images/cutouts/w04-ix0c.png",
       "iconOrig": "https://github.com/user-attachments/assets/38462cb7-8f69-46a7-85ca-6d91e5242bb6",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w05",
@@ -146,13 +148,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 0.7,
       "x": 0.5914,
       "y": 0.1,
       "thumb": "images/thumbs/w05-iw43.webp",
       "thumbOf": "images/cutouts/w05-a7nk.png",
       "iconOrig": "https://github.com/user-attachments/assets/d00afcb8-0967-4f4e-8c37-f25a3d8f4775",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w06",
@@ -199,13 +202,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.55,
       "x": 0.8543,
       "y": 0.1,
       "thumb": "images/thumbs/w07-wm5e.webp",
       "thumbOf": "images/cutouts/w07-4alo.png",
       "iconOrig": "https://github.com/user-attachments/assets/934c6f65-f63f-4751-9cb9-8522ae464476",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w08",
@@ -245,13 +249,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 2.2,
       "x": 0.1971,
       "y": 0.3,
       "thumb": "images/thumbs/w09-4la7.webp",
       "thumbOf": "images/cutouts/w09-ecgf.png",
       "iconOrig": "https://github.com/user-attachments/assets/41723346-23fc-403d-aebe-a678f8c0bcef",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w10",
@@ -330,13 +335,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 2.05,
       "x": 0.5914,
       "y": 0.3,
       "thumb": "images/thumbs/w12-0pxk.webp",
       "thumbOf": "images/cutouts/w12-8hm6.png",
       "iconOrig": "https://github.com/user-attachments/assets/a35a6710-e5dd-4ec4-8665-109b7be2b7a9",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w13",
@@ -407,13 +413,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 2.55,
       "x": 0.0657,
       "y": 0.5,
       "thumb": "images/thumbs/w15-6rvz.webp",
       "thumbOf": "images/cutouts/w15-ddvo.png",
       "iconOrig": "https://github.com/user-attachments/assets/67ebca73-8745-431f-b871-af085b86cda9",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w16",
@@ -465,13 +472,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.65,
       "x": 0.3286,
       "y": 0.5,
       "thumb": "images/thumbs/w17-ak8p.webp",
       "thumbOf": "images/cutouts/w17-2rqa.png",
       "iconOrig": "https://github.com/user-attachments/assets/c1b4c717-a58b-4f5a-807d-56ddd88d78f7",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w18",
@@ -604,13 +612,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 0.6,
       "x": 0.0657,
       "y": 0.7,
       "thumb": "images/thumbs/w22-mdeq.webp",
       "thumbOf": "images/cutouts/w22-kfzq.png",
       "iconOrig": "https://github.com/user-attachments/assets/016435c0-e4fd-43e6-986e-c33093aba7a1",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w23",
@@ -658,13 +667,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.4,
       "x": 0.3286,
       "y": 0.7,
       "thumb": "images/thumbs/w24-44jw.webp",
       "thumbOf": "images/cutouts/w24-v60j.png",
       "iconOrig": "https://github.com/user-attachments/assets/6c0ca765-f44d-406a-ad9d-48175641c712",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w25",
