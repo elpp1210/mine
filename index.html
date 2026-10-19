@@ -228,6 +228,8 @@ button,input,textarea,select{font:inherit;color:inherit}
 "use strict";
 var PREVIEW={};
 function refOf(x){return x&&typeof x==="object"?x.src:x}
+function sized(ref,w){var u=imgSrc(ref);if(/^https:\/\//.test(u)&&!/weserv/.test(u))return "https://images.weserv.nl/?url="+encodeURIComponent(u)+"&w="+w+"&we=1&output=webp&q=80";return u}
+function fallbackImg(img,ref){img.addEventListener("error",function f(){img.removeEventListener("error",f);img.src=imgSrc(ref)})}
 function imgSrc(ref){ref=refOf(ref);if(!ref)return "";ref=String(ref);if(PREVIEW[ref])return PREVIEW[ref];if(/^(https?:|data:|blob:)/.test(ref))return ref;return ref.replace(/^\/+/,"")}
 
 /* ---------- state ---------- */
@@ -323,7 +325,7 @@ function renderDesk(){
   DATA.works.forEach(function(w){
     var s=Math.round(BASE*(w.scale||1));
     var el=h("button",{class:"icon",style:"--s:"+s+"px","aria-label":w.title+(w.year?", "+w.year:"")+" 열기"},
-      h("span",{class:"pic"},h("img",{src:imgSrc(w.icon),alt:"",draggable:"false"})),
+      h("span",{class:"pic"},(function(){var im=h("img",{src:sized(w.icon,360),alt:"",draggable:"false"});fallbackImg(im,w.icon);return im})()),
       h("span",{class:"lab",text:w.title||"제목 없음"}));
     nodes[w.id]={el:el,x:0,y:0,vx:0,vy:0,w:w};
     attachDrag(el,w);
@@ -408,16 +410,16 @@ document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var t
 function openWork(id){
   var w=DATA.works.find(function(x){return x.id===id});if(!w)return;
   var pics=(w.images||[]).slice();var cutIdx=-1;
-  if(w.icon){pics.push({src:w.icon,caption:""});cutIdx=pics.length-1}
+  if(w.icon&&!pics.some(function(p){return p.src===w.icon})){pics.push({src:w.icon,caption:""});cutIdx=pics.length-1}
   var defCap=[w.title,w.year,w.medium,w.size].filter(Boolean).join(", ");
   var mainImg=h("img",{alt:w.title||""});
   var cap=h("p",{class:"work-cap"});
   var thumbs=h("div",{class:"thumbs"});
   function show(i){var p=pics[i]||{};mainImg.src=imgSrc(p);mainImg.className=(i===cutIdx)?"cut":"";cap.textContent=p.caption||defCap;
     Array.prototype.forEach.call(thumbs.children,function(t,j){t.setAttribute("aria-current",j===i?"true":"false")})}
-  if(pics.length>1)pics.forEach(function(p,i){thumbs.appendChild(h("button",{class:"thumb","aria-label":(i+1)+"번째 이미지",style:"background-image:url(\""+imgSrc(p)+"\")",onclick:function(){show(i)}}))});
+  if(pics.length>1)pics.forEach(function(p,i){thumbs.appendChild(h("button",{class:"thumb","aria-label":(i+1)+"번째 이미지",style:"background-image:url(\""+sized(p,160)+"\")",onclick:function(){show(i)}}))});
   var meta=h("dl",{class:"meta"});
-  [["연도",w.year,0],["재료",w.medium,1],["크기",w.size,0]].forEach(function(r){if(r[1]){meta.appendChild(h("dt",{text:r[0]}));meta.appendChild(h("dd",{class:r[2]?"txt":null,text:r[1]}))}});
+  [["분류",w.type,1],["연도",w.year,0],["재료",w.medium,1],["크기",w.size,0]].forEach(function(r){if(r[1]){meta.appendChild(h("dt",{text:r[0]}));meta.appendChild(h("dd",{class:r[2]?"txt":null,text:r[1]}))}});
   var body=h("div",{class:"work"},
     h("div",{class:"work-stage"},h("figure",{class:"work-fig"},h("div",{class:"work-main"},mainImg),cap),pics.length>1?thumbs:null),
     h("div",{class:"work-info"},
@@ -431,8 +433,8 @@ function openWork(id){
 function openList(){
   var tb=h("tbody");
   DATA.works.forEach(function(w){tb.appendChild(h("tr",{class:"rowbtn",tabindex:"0",onclick:function(){openWork(w.id)},onkeydown:function(e){if(e.key==="Enter")openWork(w.id)}},
-    h("td",null,h("img",{class:"mini",src:imgSrc(w.icon),alt:""})),h("td",{text:w.title||"제목 없음"}),h("td",{class:"num",text:w.year||""}),h("td",{text:w.medium||""})))});
-  var body=h("div",{style:"overflow-x:auto"},h("table",{class:"list"},h("thead",null,h("tr",null,h("th",{style:"width:40px"}),h("th",{text:"제목"}),h("th",{text:"연도"}),h("th",{text:"재료"}))),tb));
+    h("td",null,h("img",{class:"mini",src:sized(w.icon,80),alt:""})),h("td",{text:w.title||"제목 없음"}),h("td",{class:"num",text:w.year||""}),h("td",{text:w.type||""}),h("td",{text:w.medium||""})))});
+  var body=h("div",{style:"overflow-x:auto"},h("table",{class:"list"},h("thead",null,h("tr",null,h("th",{style:"width:40px"}),h("th",{text:"제목"}),h("th",{text:"연도"}),h("th",{text:"분류"}),h("th",{text:"재료"}))),tb));
   openWindow("works","작업 목록 — "+DATA.works.length+"점",body,{w:620,h:440,refresh:true})}
 function openCV(){
   var doc=h("div",{class:"doc"},h("div",{class:"doc-head"},h("h2",{text:DATA.site.name||""}),DATA.site.nameEn?h("p",{text:DATA.site.nameEn}):null));
@@ -453,9 +455,9 @@ function openInfo(){
   var dl=h("dl",{class:"meta"});
   if(DATA.site.email){dl.appendChild(h("dt",{text:"이메일"}));dl.appendChild(h("dd",null,h("span",{style:"user-select:all",text:DATA.site.email})))}
   if(DATA.site.instagram){var ig=DATA.site.instagram.replace(/^@/,"");dl.appendChild(h("dt",{text:"인스타그램"}));dl.appendChild(h("dd",null,h("a",{href:"https://instagram.com/"+encodeURIComponent(ig),target:"_blank",rel:"noopener",text:"@"+ig})))}
-  var doc=h("div",{class:"doc"},h("div",{class:"doc-head"},h("h2",{text:DATA.site.name||""}),DATA.site.nameEn?h("p",{text:DATA.site.nameEn}):null),dl,
+  var doc=h("div",{class:"doc"},h("div",{class:"doc-head"},h("h2",{text:DATA.site.name||""}),DATA.site.nameEn?h("p",{text:DATA.site.nameEn}):null),DATA.site.tagline?h("p",{class:"prose",style:"margin:0",text:DATA.site.tagline}):null,dl,
     h("div",{class:"row-acts"},h("button",{class:"btn",onclick:function(){openCV()}},"이력 보기"),h("button",{class:"btn",onclick:function(){openStatement()}},"스테이트먼트 읽기")));
-  openWindow("info","정보",doc,{w:420,h:320,refresh:true})}
+  openWindow("info","정보",doc,{w:440,h:380,refresh:true})}
 
 /* ================= ADMIN ================= */
 var admTab="works", admSel=null, admStatus=null, saveBtn=null;
@@ -508,7 +510,7 @@ function drawWorks(main){
   if(!admSel||!DATA.works.find(function(w){return w.id===admSel}))admSel=DATA.works[0]?DATA.works[0].id:null;
   var list=h("div",{class:"wk-list"});
   DATA.works.forEach(function(w){list.appendChild(h("button",{class:"wk-item","aria-current":w.id===admSel?"true":"false",onclick:function(){admSel=w.id;rerender()}},
-    h("img",{src:imgSrc(w.icon),alt:""}),h("span",{class:"t"},w.title||"제목 없음",h("small",{text:w.year||"—"}))))});
+    h("img",{src:sized(w.icon,80),alt:""}),h("span",{class:"t"},w.title||"제목 없음",h("small",{text:w.year||"—"}))))});
   list.appendChild(h("button",{class:"btn sm",style:"margin:8px 6px 0;align-self:flex-start",onclick:function(){
     var w={id:uid(),title:"새 작업",year:String(new Date().getFullYear()),medium:"",size:"",desc:"",icon:"",images:[],scale:1,x:.35+Math.random()*.3,y:.3+Math.random()*.3};
     DATA.works.push(w);admSel=w.id;place[w.id]={fx:w.x,fy:w.y};if(narrow)gridPlace();renderDesk();markDirty("작업 추가");rerender()}},"+ 새 작업"));
@@ -530,8 +532,8 @@ function buildWorkForm(form,w){
   form.appendChild(txtField("제목",w.title,function(v){w.title=v;delete w.sample;refreshDesk()}));
   form.appendChild(h("div",{class:"grid2"},
     txtField("연도",w.year,function(v){w.year=v;refreshDesk()},{ph:"2025"}),
-    txtField("크기",w.size,function(v){w.size=v},{ph:"130.3 × 97 cm (60호)"})));
-  form.appendChild(txtField("재료 / 기법",w.medium,function(v){w.medium=v},{ph:"캔버스에 유채"}));
+    txtField("크기",w.size,function(v){w.size=v},{ph:"W520xD140xH2840mm"})));
+  form.appendChild(h("div",{class:"grid2"},txtField("분류",w.type,function(v){w.type=v},{ph:"가구 / 조명 / 조형"}),txtField("재료 / 기법",w.medium,function(v){w.medium=v},{ph:"도자"})));
   form.appendChild(txtField("작품 설명",w.desc,function(v){w.desc=v},{area:true,hint:"빈 줄로 문단을 나눌 수 있어요."}));
 
   /* icon */
@@ -632,6 +634,7 @@ function drawSite(main){
   wrap.appendChild(h("div",{class:"grid2"},
     txtField("이메일",DATA.site.email,function(v){DATA.site.email=v},{type:"email",hint:"정보 창에 복사할 수 있는 글자로 보여요."}),
     txtField("인스타그램",DATA.site.instagram,function(v){DATA.site.instagram=v},{ph:"@아이디"})));
+  wrap.appendChild(txtField("한 줄 소개",DATA.site.tagline,function(v){DATA.site.tagline=v},{hint:"이름을 눌렀을 때 뜨는 정보 창에 보여요."}));
   var sw=h("div",{class:"swatches"});
   var picker=h("input",{type:"color",id:"bg-pick","aria-label":"직접 고르기",value:DATA.site.bg||"#c9ccc3",style:"width:44px;height:34px;border:0;background:none;padding:0;cursor:pointer"});
   var prev=h("div",{class:"preview-desk"});
