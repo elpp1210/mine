@@ -18,6 +18,11 @@ function normalize(d){d=d||{};d.site=d.site||{};
 var canEdit=false, dirty=false;
 var GH={owner:"elpp1210",repo:"mine",branch:"main",path:"content/site.json",sha:null,token:null};
 try{GH.token=localStorage.getItem("byunjiwon-admin-key")}catch(e){}
+var PENDING={};
+function ghGit(method,path,body){
+  return fetch("https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/git/"+path,{method:method,cache:"no-store",headers:{"Authorization":"Bearer "+GH.token,"Accept":"application/vnd.github+json"},body:body?JSON.stringify(body):undefined})
+    .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.message||("HTTP "+r.status));e.status=r.status;throw e}return j})})}
+function queueFile(p,b){PENDING[p]=b;PREVIEW[p]=URL.createObjectURL(b);return Promise.resolve(p)}
 function ghApi(method,path,body){
   var url="https://api.github.com/repos/"+GH.owner+"/"+GH.repo+"/contents/"+path+(method==="GET"?"?ref="+GH.branch+"&t="+Date.now():"");
   return fetch(url,{method:method,cache:"no-store",headers:{"Authorization":"Bearer "+GH.token,"Accept":"application/vnd.github+json"},body:body?JSON.stringify(body):undefined})
@@ -326,9 +331,9 @@ function upload(file,max,forcePng){
     if(b.size>20e6)throw new Error("파일이 너무 커요. 20MB 이하로 줄여 주세요.");
     var t=b.type||file.type,ext=t==="image/png"?"png":t==="image/jpeg"?"jpg":t==="image/svg+xml"?"svg":t==="image/gif"?"gif":t==="image/webp"?"webp":"png";
     var p="images/uploads/"+new Date().toISOString().slice(0,10)+"-"+Math.random().toString(36).slice(2,8)+"."+ext;
-    return blobB64(b).then(function(c){return ghApi("PUT",p,{message:"이미지 추가",content:c,branch:GH.branch})}).then(function(){PREVIEW[p]=URL.createObjectURL(b);return p})})
+    return queueFile(p,b)})
   .catch(function(e){throw new Error(e.status===401?"관리 열쇠가 만료됐거나 틀렸어요. 다시 로그인해 주세요.":e.status===403||e.status===404?"이 열쇠로는 올릴 수 없어요. 열쇠 권한의 Contents가 Read and write인지 확인해 주세요.":(e.message||"업로드에 실패했어요."))})}
-function putBlob(p,b){return blobB64(b).then(function(c){return ghApi("PUT",p,{message:"아이콘 썸네일",content:c,branch:GH.branch})}).then(function(){PREVIEW[p]=URL.createObjectURL(b);return p})}
+function putBlob(p,b){return queueFile(p,b)}
 function thumbPath(w){return "images/thumbs/"+w.id+"-"+Math.random().toString(36).slice(2,6)+".webp"}
 function canvasThumb(blob){return new Promise(function(res,rej){var url=URL.createObjectURL(blob),im=new Image();
   im.onload=function(){var r=Math.min(1,640/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*r);c.height=Math.round(im.naturalHeight*r);
@@ -425,7 +430,7 @@ function buildWorkForm(form,w){
   var icPrev=h("img",{src:imgSrc(w.icon),alt:"아이콘 미리보기"});icPrev.hidden=!w.icon;icPrev.addEventListener("load",function(){icPrev.hidden=false});
   var icMsg=h("div",{class:"hint",text:"배경을 지운 투명 PNG가 가장 잘 어울려요. 바탕화면 아이콘과 작업 창에 쓰입니다."});
   function doIcon(file){icMsg.textContent="올리는 중…";upload(file,1200,true).then(function(id){w.icon=id;w.cutout=true;delete w.iconOrig;delete w.sample;icPrev.src=imgSrc(id);
-    icMsg.textContent="아이콘 썸네일 만드는 중…";return makeThumb(w).catch(function(){w.thumb="";})}).then(function(){refreshDesk();icMsg.textContent="올렸어요.";markDirty("아이콘")}).catch(function(e){icMsg.textContent=e.message})}
+    icMsg.textContent="아이콘 썸네일 만드는 중…";return makeThumb(w).catch(function(){w.thumb="";})}).then(function(){refreshDesk();icMsg.textContent="준비됐어요. ‘저장하고 게시’를 누르면 사이트에 올라가요.";markDirty("아이콘")}).catch(function(e){icMsg.textContent=e.message})}
   var drop=h("div",{class:"drop"},icPrev,h("div",{class:"acts"},h("button",{class:"btn sm",onclick:function(){filePick(false,function(f){if(f[0])doIcon(f[0])})}},w.icon?"누끼 이미지 바꾸기":"누끼 이미지 올리기"),
     h("button",{class:"btn sm",onclick:function(e){var b=e.currentTarget;b.disabled=true;cutoutOne(w,function(st){icMsg.textContent=st+"…"}).then(function(){icPrev.src=imgSrc(w.icon);refreshDesk();icMsg.textContent="누끼를 땄어요. 마음에 들면 ‘저장하고 게시’를 눌러 주세요.";markDirty("누끼")},function(er){icMsg.textContent=er.message}).then(function(){b.disabled=false})}},"자동 누끼 따기"),
     w.iconOrig?h("button",{class:"btn sm",onclick:function(){w.icon=w.iconOrig;delete w.iconOrig;delete w.cutout;w.thumb="";icPrev.src=imgSrc(w.icon);icPrev.hidden=!w.icon;refreshDesk();icMsg.textContent="원래 사진으로 되돌렸어요.";markDirty("아이콘")}},"원래 사진으로 되돌리기"):null,
@@ -564,14 +569,32 @@ function save(){
   if(!GH.token){setStatus("먼저 관리 열쇠로 로그인해 주세요.","err");return}
   saving=true;saveBtn.disabled=true;setStatus("저장하는 중…");
   var out=JSON.stringify(DATA,null,2)+"\n";
-  ghApi("PUT",GH.path,{message:"포트폴리오 내용 수정",content:b64utf8(out),sha:GH.sha,branch:GH.branch}).then(function(r){
-    GH.sha=r.content&&r.content.sha;saving=false;dirty=false;adminBtn.classList.remove("dirty");adminBtn.setAttribute("aria-label","관리 열기");
+  var used=JSON.stringify(DATA);var paths=Object.keys(PENDING).filter(function(p){return used.indexOf(p)>=0});
+  var entries=[],n=paths.length,k=0;
+  /* 1) send each new image once (these are not commits, so the site is rebuilt only once) */
+  paths.reduce(function(pr,p){return pr.then(function(){return blobB64(PENDING[p]).then(function(c){return ghGit("POST","blobs",{content:c,encoding:"base64"})})
+      .then(function(r){entries.push({path:p,mode:"100644",type:"blob",sha:r.sha});k++;setStatus("사진 올리는 중… "+k+"/"+n)})})},Promise.resolve())
+  .then(function(){return ghGit("POST","blobs",{content:b64utf8(out),encoding:"base64"})})
+  .then(function(jb){entries.push({path:GH.path,mode:"100644",type:"blob",sha:jb.sha});
+    /* 2) one commit on top of the latest version, unless someone else changed the content meanwhile */
+    function attempt(tries){
+      return ghGit("GET","ref/heads/"+GH.branch).then(function(ref){var head=ref.object.sha;
+        return ghGit("GET","commits/"+head).then(function(c){
+          return ghApi("GET",GH.path).then(function(cur){
+            if(GH.sha&&cur.sha!==GH.sha){var e=new Error("conflict");e.status=409;throw e}
+            return ghGit("POST","trees",{base_tree:c.tree.sha,tree:entries})})
+          .then(function(t){return ghGit("POST","commits",{message:"포트폴리오 내용 수정"+(n?" (사진 "+n+"장)":""),tree:t.sha,parents:[head]})})
+          .then(function(cm){return ghGit("PATCH","refs/heads/"+GH.branch,{sha:cm.sha})})})})
+      .catch(function(e){if(e.status===422&&tries>0)return attempt(tries-1);throw e})}
+    return attempt(2).then(function(){GH.sha=jb.sha})})
+  .then(function(){paths.forEach(function(p){delete PENDING[p]});
+    saving=false;dirty=false;adminBtn.classList.remove("dirty");adminBtn.setAttribute("aria-label","관리 열기");
     setStatus("저장했어요. 1~2분 뒤 byunjiwon.com에 반영돼요.","good")})
   .catch(function(e){saving=false;saveBtn.disabled=false;var s=e.status;
-    setStatus(s===409||(s===422&&/sha/i.test(e.message))?"다른 곳에서 먼저 저장된 내용이 있어요. 새로고침한 뒤 다시 고쳐 주세요.":
+    setStatus(s===409?"다른 곳에서 먼저 저장된 내용이 있어요. 새로고침한 뒤 다시 고쳐 주세요.":
       s===401?"관리 열쇠가 만료됐거나 틀렸어요. ‘사이트 설정’에서 로그아웃한 뒤 새 열쇠로 다시 로그인해 주세요.":
       s===403||s===404?"이 열쇠로는 저장할 수 없어요. 열쇠 권한의 Contents가 Read and write인지 확인해 주세요.":
-      "저장하지 못했어요: "+e.message,"err")})}
+      "저장하지 못했어요: "+e.message+". 잠시 뒤 다시 눌러 주세요.","err")})}
 
 /* --- login with a GitHub key --- */
 function openLogin(){
