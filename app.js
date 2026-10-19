@@ -739,8 +739,8 @@ const borderColor = (opts.borderColor != null ? opts.borderColor : 'rgba(0,0,0,0
   const mouse = { x: Infinity, y: Infinity, active: false };
   function updateMouse(e){
     const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
+    mouse.x = W - (e.clientX - rect.left);
+    mouse.y = H - (e.clientY - rect.top);
     mouse.active = true;
   }
   hero.addEventListener('pointermove',  updateMouse, {passive:true});
@@ -838,10 +838,21 @@ const borderColor = (opts.borderColor != null ? opts.borderColor : 'rgba(0,0,0,0
       s.ox = s.ox * DECAY + (tx - s.ox) * LERP;
       s.oy = s.oy * DECAY + (ty - s.oy) * LERP;
 
-      const rx = s.x + s.ox;
-      const ry = s.y + s.oy;
+      const rx = W - (s.x + s.ox);
+      const ry = H - (s.y + s.oy);
 
-      drawSpikyCircle(ctx, rx, ry, R, now, {
+      let rr = R;
+      if (s.pop){
+        const pa = (now - s.pop) / 260;
+        if (pa >= 1){ s.gone = true; continue; }
+        if (pa > 0){
+          rr = R * (1 + pa * 0.9); ctx.globalAlpha = 1 - pa;
+          ctx.lineWidth = 0.7; ctx.strokeStyle = 'rgba(0,0,0,0.32)';
+          for (let k = 0; k < 6; k++){ const an = k / 6 * Math.PI * 2 + s.x, r1 = rr + 5 + pa * 12, r2 = r1 + 4;
+            ctx.beginPath(); ctx.moveTo(rx + Math.cos(an) * r1, ry + Math.sin(an) * r1); ctx.lineTo(rx + Math.cos(an) * r2, ry + Math.sin(an) * r2); ctx.stroke(); }
+        }
+      }
+      drawSpikyCircle(ctx, rx, ry, rr, now, {
         spikes: 22,
         lenMin: 3,
         lenMax: 4,
@@ -851,8 +862,14 @@ const borderColor = (opts.borderColor != null ? opts.borderColor : 'rgba(0,0,0,0
         borderColor: 'rgba(0,0,0,0.28)',
         edge:  '#ffffff'
       });
+      ctx.globalAlpha = 1;
     }
 
+    if (popping){
+      for (let i = spores.length - 1; i >= 0; i--) if (spores[i].gone) spores.splice(i, 1);
+      if (!spores.length){ popping = false; ctx.clearRect(0,0,W,H); return; }
+      rafId = requestAnimationFrame(drawFrame); return;
+    }
     nextSpawn -= dt;
     if (nextSpawn <= 0){
       for (let i = 0; i < 3; i++) spawn(i > 0);
@@ -862,9 +879,10 @@ const borderColor = (opts.borderColor != null ? opts.borderColor : 'rgba(0,0,0,0
   }
 
   /* on/off from the menu bar button (the spores themselves are unchanged) */
-  let running = false, rafId = 0;
+  let running = false, popping = false, rafId = 0;
   window.addEventListener('resize', () => { if (running) fit(); }, { passive: true });
   function start(){
+    cancelAnimationFrame(rafId); popping = false;
     running = true; spores.length = 0; initialized = false;
     spreadX = 30; spreadY = 20; nextSpawn = 130 + Math.random() * 130;
     fit();
@@ -874,8 +892,11 @@ const borderColor = (opts.borderColor != null ? opts.borderColor : 'rgba(0,0,0,0
     sporeBtn.setAttribute('aria-pressed','true');
   }
   function stop(){
-    running = false; cancelAnimationFrame(rafId);
-    ctx.clearRect(0,0,W,H); spores.length = 0;
+    /* pop: the ones nearest the button burst first */
+    running = false; popping = true;
+    const now = performance.now(), bx = 80, by = H * 0.80;
+    spores.forEach(s => { s.d = Math.hypot(s.x - bx, s.y - by); });
+    spores.slice().sort((a, b) => a.d - b.d).forEach((s, i) => { s.pop = now + Math.min(900, i * 4) + Math.random() * 120; });
     sporeBtn.setAttribute('aria-pressed','false');
   }
   sporeBtn.addEventListener('click', () => { running ? stop() : start(); });
