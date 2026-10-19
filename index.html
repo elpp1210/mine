@@ -59,14 +59,16 @@ button,input,textarea,select{font:inherit;color:inherit}
   border-radius:10px;user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform}
 .icon:active{cursor:grabbing}
 .icon .pic{display:grid;place-items:center;width:var(--s);height:var(--s);border-radius:8px;transition:transform .18s ease}
-.icon img{max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none;
+.icon img{opacity:0;transition:opacity .35s ease;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none;
   filter:drop-shadow(0 10px 14px rgba(0,0,0,.18)) drop-shadow(0 2px 3px rgba(0,0,0,.14))}
+.icon img.ok{opacity:1}
 .icon:hover .pic{transform:translateY(-3px) scale(1.03)}
 .icon.dragging .pic{transform:scale(1.07)}
 .icon.dragging img{filter:drop-shadow(0 22px 22px rgba(0,0,0,.22)) drop-shadow(0 3px 4px rgba(0,0,0,.14))}
-.icon .lab{max-width:calc(var(--s) + 24px);font-size:12px;line-height:1.3;text-align:center;color:var(--label);padding:1px 6px;border-radius:4px;
+.icon .lab{position:absolute;top:calc(var(--s) + 14px);left:50%;transform:translateX(-50%);opacity:0;transition:opacity .15s;pointer-events:none;white-space:nowrap;-webkit-line-clamp:1!important;max-width:calc(var(--s) + 80px);font-size:12px;line-height:1.3;text-align:center;color:var(--label);padding:1px 6px;border-radius:4px;
   text-shadow:0 1px 2px var(--label-shadow);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .icon.sel .pic{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.icon:hover .lab,.icon:focus-visible .lab,.icon.sel .lab,.icon.dragging .lab{opacity:1}
 .icon.sel .lab{background:var(--accent);color:#fff;text-shadow:none}
 .desk-hint{position:absolute;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));font-size:11.5px;color:var(--label);opacity:.6;pointer-events:none}
 .desk-empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--label);opacity:.7;font-size:14px;text-align:center;padding:0 24px}
@@ -228,7 +230,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 "use strict";
 var PREVIEW={};
 function refOf(x){return x&&typeof x==="object"?x.src:x}
-function sized(ref,w){var u=imgSrc(ref);if(/^https:\/\//.test(u)&&!/weserv/.test(u))return "https://images.weserv.nl/?url="+encodeURIComponent(u)+"&w="+w+"&we=1&output=webp&q=80";return u}
+function sized(ref,w){var u=imgSrc(ref);if(/^https:\/\//.test(u)&&!/weserv/.test(u))return "https://images.weserv.nl/?url="+encodeURIComponent(u)+"&w="+w+"&h="+w+"&fit=inside&we=1&output=webp&q=72";return u}
 function fallbackImg(img,ref){img.addEventListener("error",function f(){img.removeEventListener("error",f);img.src=imgSrc(ref)})}
 function imgSrc(ref){ref=refOf(ref);if(!ref)return "";ref=String(ref);if(PREVIEW[ref])return PREVIEW[ref];if(/^(https?:|data:|blob:)/.test(ref))return ref;return ref.replace(/^\/+/,"")}
 
@@ -325,7 +327,7 @@ function renderDesk(){
   DATA.works.forEach(function(w){
     var s=Math.round(BASE*(w.scale||1));
     var el=h("button",{class:"icon",style:"--s:"+s+"px","aria-label":w.title+(w.year?", "+w.year:"")+" 열기"},
-      h("span",{class:"pic"},(function(){var im=h("img",{src:sized(w.icon,360),alt:"",draggable:"false"});fallbackImg(im,w.icon);return im})()),
+      h("span",{class:"pic"},(function(){var im=h("img",{src:w.thumb?imgSrc(w.thumb):sized(w.icon,240),alt:"",draggable:"false",decoding:"async"});im.addEventListener("load",function(){im.classList.add("ok")});fallbackImg(im,w.icon);if(im.complete&&im.naturalWidth)im.classList.add("ok");return im})()),
       h("span",{class:"lab",text:w.title||"제목 없음"}));
     nodes[w.id]={el:el,x:0,y:0,vx:0,vy:0,w:w};
     attachDrag(el,w);
@@ -501,6 +503,24 @@ function upload(file,max,forcePng){
     var p="images/uploads/"+new Date().toISOString().slice(0,10)+"-"+Math.random().toString(36).slice(2,8)+"."+ext;
     return blobB64(b).then(function(c){return ghApi("PUT",p,{message:"이미지 추가",content:c,branch:GH.branch})}).then(function(){PREVIEW[p]=URL.createObjectURL(b);return p})})
   .catch(function(e){throw new Error(e.status===401?"관리 열쇠가 만료됐거나 틀렸어요. 다시 로그인해 주세요.":e.status===403||e.status===404?"이 열쇠로는 올릴 수 없어요. 열쇠 권한의 Contents가 Read and write인지 확인해 주세요.":(e.message||"업로드에 실패했어요."))})}
+function putBlob(p,b){return blobB64(b).then(function(c){return ghApi("PUT",p,{message:"아이콘 썸네일",content:c,branch:GH.branch})}).then(function(){PREVIEW[p]=URL.createObjectURL(b);return p})}
+function thumbPath(w){return "images/thumbs/"+w.id+"-"+Math.random().toString(36).slice(2,6)+".webp"}
+function canvasThumb(blob){return new Promise(function(res,rej){var url=URL.createObjectURL(blob),im=new Image();
+  im.onload=function(){var r=Math.min(1,320/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*r);c.height=Math.round(im.naturalHeight*r);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){b?res(b):rej(new Error("썸네일을 만들지 못했어요."))},"image/webp",.8)};
+  im.onerror=function(){URL.revokeObjectURL(url);rej(new Error("썸네일을 만들지 못했어요."))};im.src=url})}
+function makeThumb(w){
+  var src=imgSrc(w.icon);var p;
+  if(PREVIEW[w.icon]||/^blob:|^data:/.test(src)||!/^https:/.test(src))p=fetch(src).then(function(r){if(!r.ok)throw new Error("이미지를 읽지 못했어요.");return r.blob()}).then(canvasThumb);
+  else p=fetch(sized(w.icon,320)).then(function(r){if(!r.ok)throw new Error("이미지를 줄이지 못했어요 ("+r.status+").");return r.blob()});
+  return p.then(function(b){if(b.size>600000)return canvasThumb(b);return b}).then(function(b){return putBlob(thumbPath(w),b)}).then(function(path){w.thumb=path;w.thumbOf=w.icon;return path})}
+function needThumb(w){return w.icon&&(!w.thumb||w.thumbOf!==w.icon)}
+function lightenAll(btn,msg,done){
+  var todo=DATA.works.filter(needThumb),n=todo.length,i=0,fail=0;if(!n){msg.textContent="모든 아이콘이 이미 가벼워요.";return}
+  btn.disabled=true;msg.textContent="가볍게 만드는 중… 0/"+n;
+  todo.reduce(function(p,w){return p.then(function(){return makeThumb(w).then(function(){i++},function(){fail++}).then(function(){msg.textContent="가볍게 만드는 중… "+(i+fail)+"/"+n})})},Promise.resolve())
+  .then(function(){btn.disabled=false;markDirty("아이콘 썸네일");
+    msg.textContent=i+"개를 가볍게 만들었어요"+(fail?", "+fail+"개는 실패했어요(다시 누르면 실패한 것만 다시 해요)":"")+". 아래 ‘저장하고 게시’를 눌러 주세요.";if(done)done()})}
 function filePick(multiple,cb){var i=h("input",{type:"file",accept:"image/*",style:"display:none"});if(multiple)i.multiple=true;
   i.addEventListener("change",function(){cb(Array.prototype.slice.call(i.files));i.remove()});document.body.appendChild(i);i.click()}
 function setStatus(msg,kind){if(admStatus){admStatus.textContent=msg;admStatus.className="adm-status"+(kind?" "+kind:"")}}
@@ -508,6 +528,10 @@ function setStatus(msg,kind){if(admStatus){admStatus.textContent=msg;admStatus.c
 /* --- works tab --- */
 function drawWorks(main){
   if(!admSel||!DATA.works.find(function(w){return w.id===admSel}))admSel=DATA.works[0]?DATA.works[0].id:null;
+  var heavy=DATA.works.filter(needThumb).length;
+  if(heavy){var lb=h("button",{class:"btn sm primary"},"가볍게 만들기"),lm=h("span",{text:"바탕화면 아이콘 "+heavy+"개가 원본 사진이라 무거워요. 작은 썸네일을 만들어 두면 첫 화면이 빨리 떠요."});
+    lb.addEventListener("click",function(){lightenAll(lb,lm,function(){renderDesk()})});
+    main.appendChild(h("div",{class:"notice",style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},lm,lb))}
   var list=h("div",{class:"wk-list"});
   DATA.works.forEach(function(w){list.appendChild(h("button",{class:"wk-item","aria-current":w.id===admSel?"true":"false",onclick:function(){admSel=w.id;rerender()}},
     h("img",{src:sized(w.icon,80),alt:""}),h("span",{class:"t"},w.title||"제목 없음",h("small",{text:w.year||"—"}))))});
@@ -527,7 +551,7 @@ function txtField(label,val,on,o){o=o||{};var id="f-"+label.replace(/\s/g,"")+(o
   inp.addEventListener("input",function(){on(inp.value);markDirty()});
   return h("div",{class:"field"},h("label",{for:id,text:label}),inp,o.hint?h("div",{class:"hint",text:o.hint}):null)}
 function buildWorkForm(form,w){
-  function refreshDesk(){var n=nodes[w.id];if(n){n.el.querySelector(".lab").textContent=w.title||"제목 없음";n.el.querySelector("img").src=imgSrc(w.icon)}
+  function refreshDesk(){var n=nodes[w.id];if(n){n.el.querySelector(".lab").textContent=w.title||"제목 없음";n.el.querySelector("img").src=w.thumb?imgSrc(w.thumb):imgSrc(w.icon)}
     var it=document.querySelector('.wk-item[aria-current="true"] .t');if(it){it.firstChild.textContent=w.title||"제목 없음";it.querySelector("small").textContent=w.year||"—"}}
   form.appendChild(txtField("제목",w.title,function(v){w.title=v;delete w.sample;refreshDesk()}));
   form.appendChild(h("div",{class:"grid2"},
@@ -539,7 +563,8 @@ function buildWorkForm(form,w){
   /* icon */
   var icPrev=h("img",{src:imgSrc(w.icon),alt:"아이콘 미리보기"});
   var icMsg=h("div",{class:"hint",text:"배경을 지운 투명 PNG가 가장 잘 어울려요. 바탕화면 아이콘과 작업 창에 쓰입니다."});
-  function doIcon(file){icMsg.textContent="올리는 중…";upload(file,1200,true).then(function(id){w.icon=id;delete w.sample;icPrev.src=imgSrc(id);refreshDesk();icMsg.textContent="올렸어요.";markDirty("아이콘")}).catch(function(e){icMsg.textContent=e.message})}
+  function doIcon(file){icMsg.textContent="올리는 중…";upload(file,1200,true).then(function(id){w.icon=id;delete w.sample;icPrev.src=imgSrc(id);
+    icMsg.textContent="아이콘 썸네일 만드는 중…";return makeThumb(w).catch(function(){w.thumb="";})}).then(function(){refreshDesk();icMsg.textContent="올렸어요.";markDirty("아이콘")}).catch(function(e){icMsg.textContent=e.message})}
   var drop=h("div",{class:"drop"},icPrev,h("div",{class:"acts"},h("button",{class:"btn sm",onclick:function(){filePick(false,function(f){if(f[0])doIcon(f[0])})}},w.icon?"누끼 이미지 바꾸기":"누끼 이미지 올리기"),icMsg));
   dnd(drop,function(fs){doIcon(fs[0])});
   form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"바탕화면 아이콘 (누끼 이미지)"}),drop));
