@@ -110,28 +110,31 @@ function layoutAll(){if(narrow){layoutNarrow();return}DATA.works.forEach(functio
 /* phones: same desktop, icons scaled to fit one screen and scattered without overlap */
 var msz={},mpos=null,mW=0;
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function isFlow(){var W=desk.clientWidth,H=desk.clientHeight;return W<720||H>W*0.95}
 function packNarrow(){
-  var W=desk.clientWidth,H=desk.clientHeight,x0=6,y0=TOP+4,x1=W-6,y1=H-58,A=(x1-x0)*(y1-y0);
-  var raw=DATA.works.map(function(w){return BASE*iconScale(w)}),sum=raw.reduce(function(a,r){return a+(r+16)*(r+16)},0);
-  var k=Math.min(1,Math.sqrt(0.52*A/Math.max(1,sum)));
-  var items=DATA.works.map(function(w,i){var m=Math.max(38,Math.round(raw[i]*k));msz[w.id]=m;return {id:w.id,b:m+12,x:0,y:0}});
-  var order=items.slice().sort(function(a,b){return b.b-a.b}),placed=[],R=rng(20261020);
-  function ov(a,b){var dx=Math.min(a.x+a.b,b.x+b.b)-Math.max(a.x,b.x),dy=Math.min(a.y+a.b,b.y+b.b)-Math.max(a.y,b.y);return dx>0&&dy>0?dx*dy:0}
-  order.forEach(function(it){var best=null,bs=Infinity;
-    for(var t=0;t<160;t++){it.x=x0+R()*Math.max(1,x1-x0-it.b);it.y=y0+R()*Math.max(1,y1-y0-it.b);var sc=0;placed.forEach(function(p){sc+=ov(it,p)});if(sc<bs){bs=sc;best=[it.x,it.y]}if(sc===0)break}
-    it.x=best[0];it.y=best[1];placed.push(it)});
-  for(var it2=0;it2<80;it2++){var moved=false;
-    for(var a=0;a<items.length;a++)for(var c=a+1;c<items.length;c++){var p=items[a],q=items[c],dx=Math.min(p.x+p.b,q.x+q.b)-Math.max(p.x,q.x),dy=Math.min(p.y+p.b,q.y+q.b)-Math.max(p.y,q.y);
-      if(dx>0&&dy>0){moved=true;if(dx<dy){var sx=(p.x<q.x?-1:1)*dx/2;p.x+=sx;q.x-=sx}else{var sy=(p.y<q.y?-1:1)*dy/2;p.y+=sy;q.y-=sy}}}
-    items.forEach(function(p){p.x=Math.min(Math.max(p.x,x0),x1-p.b);p.y=Math.min(Math.max(p.y,y0),y1-p.b)});if(!moved)break}
-  mpos={};items.forEach(function(p){mpos[p.id]={x:p.x,y:p.y}});mW=W}
+  var W=desk.clientWidth,H=desk.clientHeight,x0=10,y0=TOP+10,x1=W-10,y1=H-56,AW=x1-x0,AH=y1-y0,N=DATA.works.length;if(!N)return;
+  var best=null;for(var c=2;c<=8;c++){var r=Math.ceil(N/c),cw=AW/(c+.5),ch=AH/r,sc=Math.abs(Math.log(cw/ch))+(c*r-N)*.04;if(!best||sc<best.sc)best={c:c,r:r,cw:cw,ch:ch,sc:sc}}
+  var C=best.c,Rn=best.r,cw=best.cw,ch=best.ch,cell=Math.min(cw,ch),R=rng(20261020);
+  var sc=DATA.works.map(function(w){return Math.log(BASE*iconScale(w))}),mx=Math.max.apply(null,sc),mn=Math.min.apply(null,sc);
+  /* mix big and small so neighbours differ, like objects laid out on a table */
+  var order=DATA.works.map(function(w,i){return i}).sort(function(a,b){return sc[b]-sc[a]}),mixed=[],lo=0,hi=order.length-1,flip=false;
+  while(lo<=hi){mixed.push(flip?order[hi--]:order[lo++]);flip=!flip}
+  for(var k=mixed.length-1;k>0;k--){if(R()<.35){var q=Math.floor(R()*(k+1)),t=mixed[k];mixed[k]=mixed[q];mixed[q]=t}}
+  mpos={};mixed.forEach(function(idx,n){var w=DATA.works[idx],row=Math.floor(n/C),col=n%C,inRow=Math.min(C,N-row*C);
+    var t=mx>mn?(sc[idx]-mn)/(mx-mn):.5,m=Math.round(cell*(0.62+0.36*t));msz[w.id]=m;
+    var shift=(row%2?cw/2:0)+(inRow<C?(C-inRow)*cw/2:0);
+    var cx=x0+shift+cw*(col+.5),cy=y0+ch*(row+.5);
+    var jx=(cw-m)*.48,jy=(ch-m)*.48;cx+=(R()*2-1)*Math.max(0,jx);cy+=(R()*2-1)*Math.max(0,jy);
+    mpos[w.id]={x:Math.round(cx-m/2-6),y:Math.round(cy-m/2-6)}});
+  mW=W}
+var mH=0;
 function layoutNarrow(){
-  if(!mpos||Math.abs(desk.clientWidth-mW)>2||DATA.works.some(function(w){return !mpos[w.id]}))packNarrow();
+  if(!mpos||Math.abs(desk.clientWidth-mW)>2||Math.abs(desk.clientHeight-mH)>80||DATA.works.some(function(w){return !mpos[w.id]})){packNarrow();mH=desk.clientHeight}
   var W=desk.clientWidth,H=desk.clientHeight;
   DATA.works.forEach(function(w){var n=nodes[w.id];if(!n)return;var m=msz[w.id];n.el.style.setProperty("--s",m+"px");var p=mpos[w.id];
     setPos(w.id,Math.min(Math.max(p.x,0),W-m-12),Math.min(Math.max(p.y,TOP),H-m-12))})}
-function initPlaces(){if(desk.clientWidth<720){narrow=true;return}
-  narrow=desk.clientWidth<720;
+function initPlaces(){if(isFlow()){narrow=true;return}
+  narrow=false;
   if(narrow){gridPlace()}else DATA.works.forEach(function(w){place[w.id]={fx:w.x==null?Math.random()*.9:w.x,fy:w.y==null?Math.random()*.8:w.y}})}
 
 function renderDesk(){
@@ -207,7 +210,7 @@ function startAnim(){if(anim)return;
       if(Math.abs(n.vx)<.15&&Math.abs(n.vy)<.15){n.vx=n.vy=0;settle(n.w)}else any=true});
     anim=any?requestAnimationFrame(step):null};
   anim=requestAnimationFrame(step)}
-var rT;window.addEventListener("resize",function(){clearTimeout(rT);rT=setTimeout(function(){var was=narrow;narrow=desk.clientWidth<720;if(was!==narrow&&!narrow)DATA.works.forEach(function(w){place[w.id]={fx:w.x==null?Math.random()*.9:w.x,fy:w.y==null?Math.random()*.8:w.y}});layoutAll()},80)});
+var rT;window.addEventListener("resize",function(){clearTimeout(rT);rT=setTimeout(function(){var was=narrow;narrow=isFlow();if(was!==narrow&&!narrow)DATA.works.forEach(function(w){place[w.id]={fx:w.x==null?Math.random()*.9:w.x,fy:w.y==null?Math.random()*.8:w.y}});layoutAll()},80)});
 
 /* ---------- windows ---------- */
 var wins={}, cascade=0;
@@ -228,7 +231,15 @@ function openWindow(key,title,body,o){
       h("button",{class:"light max","aria-label":"크게 보기",tabindex:"-1",onclick:function(e){e.stopPropagation();var ss=deskSize();win.style.left="8px";win.style.top=(TOP+4)+"px";win.style.width=(ss.W-16)+"px";win.style.height=(ss.H-TOP-12)+"px"}})),
     titleEl);
   var bodyEl=h("div",{class:"win-body"},body);
-  var win=h("section",{class:"win",role:"dialog","aria-label":title,style:"left:"+x+"px;top:"+y+"px;width:"+W+"px;height:"+H+"px"},bar,bodyEl);
+  var grips=["e","s","se","w","sw"].map(function(d){return h("div",{class:"grip grip-"+d,"data-d":d,"aria-hidden":"true"})});
+  var win=h("section",{class:"win",role:"dialog","aria-label":title,style:"left:"+x+"px;top:"+y+"px;width:"+W+"px;height:"+H+"px"},bar,bodyEl,grips);
+  grips.forEach(function(g){var gp=null,sx,sy,sw,sh,sl;
+    g.addEventListener("pointerdown",function(e){if(desk.clientWidth<720)return;e.preventDefault();e.stopPropagation();gp=e.pointerId;g.setPointerCapture(gp);sx=e.clientX;sy=e.clientY;sw=win.offsetWidth;sh=win.offsetHeight;sl=win.offsetLeft;focusWin(win)});
+    g.addEventListener("pointermove",function(e){if(e.pointerId!==gp)return;var d=g.dataset.d,ss=deskSize(),dx=e.clientX-sx,dy=e.clientY-sy;
+      if(d.indexOf("e")>=0)win.style.width=Math.max(320,Math.min(ss.W-win.offsetLeft-4,sw+dx))+"px";
+      if(d.indexOf("w")>=0){var nw=Math.max(320,Math.min(sw-dx,sl+sw-4));win.style.width=nw+"px";win.style.left=(sl+sw-nw)+"px"}
+      if(d.indexOf("s")>=0)win.style.height=Math.max(220,Math.min(ss.H-win.offsetTop-4,sh+dy))+"px"});
+    g.addEventListener("pointerup",function(){gp=null});g.addEventListener("pointercancel",function(){gp=null})});
   win.addEventListener("pointerdown",function(){focusWin(win)},true);
   var dx,dy,pid=null;
   bar.addEventListener("pointerdown",function(e){if(e.target.closest(".light")||desk.clientWidth<720)return;pid=e.pointerId;bar.setPointerCapture(pid);dx=e.clientX-win.offsetLeft;dy=e.clientY-win.offsetTop});
@@ -274,10 +285,10 @@ function openWork(id){
 
 /* ---------- list / cv / statement / info ---------- */
 function openList(){
-  var tb=h("tbody");
-  DATA.works.forEach(function(w){tb.appendChild(h("tr",{class:"rowbtn",tabindex:"0",onclick:function(){openWork(w.id)},onkeydown:function(e){if(e.key==="Enter")openWork(w.id)}},
-    h("td",null,h("img",{class:"mini",src:sized(w.icon,80),alt:""})),h("td",{text:w.title||"제목 없음"}),h("td",{class:"num",text:w.year||""}),h("td",{text:w.type||""}),h("td",{text:w.medium||""})))});
-  var body=h("div",{style:"overflow-x:auto"},h("table",{class:"list"},h("thead",null,h("tr",null,h("th",{style:"width:40px"}),h("th",{text:"제목"}),h("th",{text:"연도"}),h("th",{text:"분류"}),h("th",{text:"재료"}))),tb));
+  var tb=h("tbody"),list=DATA.works.map(function(w,i){return {w:w,i:i}}).sort(function(a,b){var ya=parseInt(a.w.year,10)||0,yb=parseInt(b.w.year,10)||0;return yb-ya||a.i-b.i});
+  list.forEach(function(o){var w=o.w;tb.appendChild(h("tr",{class:"rowbtn",tabindex:"0",onclick:function(){openWork(w.id)},onkeydown:function(e){if(e.key==="Enter")openWork(w.id)}},
+    h("td",null,h("img",{class:"mini",src:w.thumb?imgSrc(w.thumb):sized(w.icon,80),alt:""})),h("td",{text:w.title||"제목 없음"}),h("td",{class:"num",text:w.year||""}),h("td",{text:w.medium||""})))});
+  var body=h("div",{style:"overflow-x:auto"},h("table",{class:"list"},h("thead",null,h("tr",null,h("th",{style:"width:40px"}),h("th",{text:"제목"}),h("th",{text:"연도"}),h("th",{text:"재료"}))),tb));
   openWindow("works","작업 목록 — "+DATA.works.length+"점",body,{w:620,h:440,refresh:true})}
 function openCV(){
   var doc=h("div",{class:"doc"},h("div",{class:"doc-head"},h("h2",{text:DATA.site.name||""}),DATA.site.nameEn?h("p",{text:DATA.site.nameEn}):null));
