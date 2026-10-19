@@ -94,15 +94,17 @@ function sizeMM(str){str=String(str||"");if(!str.trim())return null;if(/가변/.
   var mx=Math.max.apply(null,nums);return mx*(cm?10:m?1000:1)}
 function autoScale(w){var mm=sizeMM(w.size);if(!mm)return null;var v=0.55*Math.pow(mm/180,0.52);return Math.round(Math.min(2.4,Math.max(0.42,v))*100)/100}
 function iconScale(w){if(w.scaleMode==="manual")return +w.scale||1;return autoScale(w)||(+w.scale||1)}
-function curS(w){return narrow&&msz[w.id]?msz[w.id]:Math.round(BASE*iconScale(w))}
-function boxW(w){return curS(w)+(narrow?12:24)}
-function boxH(w){return curS(w)+(narrow?12:48)}
+function curS(w){if(narrow&&msz[w.id])return msz[w.id];var s=Math.round(BASE*iconScale(w)),ar=arOf(w);
+  var maxH=(desk.clientHeight-TOP-24)/Math.min(1,1/ar),maxW=(desk.clientWidth-24)/Math.min(1,ar);return Math.max(24,Math.round(Math.min(s,maxH,maxW)))}
+function arOf(w){var n=nodes[w.id];return n&&n.el._ar||1}
+function boxW(w){return Math.round(curS(w)*Math.min(1,arOf(w)))+12}
+function boxH(w){return Math.round(curS(w)*Math.min(1,1/arOf(w)))+(narrow?12:30)}
 function toFrac(w,x,y){var s=deskSize();var aw=Math.max(1,s.W-boxW(w)),ah=Math.max(1,s.H-TOP-boxH(w)-8);
   return {fx:Math.min(1,Math.max(0,x/aw)),fy:Math.min(1,Math.max(0,(y-TOP)/ah))}}
 function fromFrac(w,p){var s=deskSize();var aw=Math.max(0,s.W-boxW(w)),ah=Math.max(0,s.H-TOP-boxH(w)-8);
   return {x:p.fx*aw,y:TOP+p.fy*ah}}
 function setPos(id,x,y){var n=nodes[id];if(!n)return;n.x=x;n.y=y;n.el.style.transform="translate("+Math.round(x)+"px,"+Math.round(y)+"px)"}
-function layoutAll(){if(narrow){layoutNarrow();return}DATA.works.forEach(function(w){var n=nodes[w.id];if(n)n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px");var p=fromFrac(w,place[w.id]||{fx:.5,fy:.5});setPos(w.id,p.x,p.y)})}
+function layoutAll(){if(narrow){layoutNarrow();return}DATA.works.forEach(function(w){var n=nodes[w.id];if(n)n.el.style.setProperty("--s",curS(w)+"px");var p=fromFrac(w,place[w.id]||{fx:.5,fy:.5});setPos(w.id,p.x,p.y)})}
 /* phones: same desktop, icons scaled to fit one screen and scattered without overlap */
 var msz={},mpos=null,mW=0;
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -134,15 +136,15 @@ function renderDesk(){
   iconsLayer.textContent="";nodes={};
   if(!DATA.works.length){iconsLayer.appendChild(h("div",{class:"desk-empty",text:canEdit?"아직 작업이 없어요. 오른쪽 위 ‘관리’에서 첫 작업을 추가하세요.":"작업이 곧 올라옵니다."}));return}
   DATA.works.forEach(function(w){
-    var s=Math.round(BASE*iconScale(w));
+    var s=curS(w);
     var el=h("button",{class:"icon",style:"--s:"+s+"px","aria-label":w.title+(w.year?", "+w.year:"")+" 열기"},
       h("span",{class:"pic"},(function(){var im=h("img",{src:w.thumb?imgSrc(w.thumb):sized(w.icon,240),alt:"",draggable:"false",decoding:"async"});var upgraded=false;im._checkRes=function(){
-      var need=Math.round(BASE*iconScale(w)*(window.devicePixelRatio||1));
+      var need=Math.round(curS(w)*(window.devicePixelRatio||1));
       if(!upgraded&&w.icon&&im.naturalWidth&&Math.max(im.naturalWidth,im.naturalHeight)<need*0.95){upgraded=true;var full=imgSrc(w.icon);var hi=/^https:/.test(full)?sized(w.icon,Math.min(1600,need)):full;
         var pre=new Image();pre.onload=function(){im.src=hi};pre.src=hi}};
     im.addEventListener("load",function(){if(!el._ar)shapeIcon(el,im);im._checkRes();im.classList.add("ok")});fallbackImg(im,w.icon);if(im.complete&&im.naturalWidth)im.classList.add("ok");return im})()),
       h("span",{class:"lab",text:w.title||"제목 없음"}));
-    nodes[w.id]={el:el,x:0,y:0,vx:0,vy:0,w:w};
+    el._wid=w.id;nodes[w.id]={el:el,x:0,y:0,vx:0,vy:0,w:w};
     attachDrag(el,w);
     el.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openWork(w.id)}});
     iconsLayer.appendChild(el)});
@@ -150,6 +152,7 @@ function renderDesk(){
 
 /* icons take their image's shape; clicks on transparent parts fall through to what is underneath */
 function shapeIcon(el,im){var W=im.naturalWidth,H=im.naturalHeight;if(!W||!H)return;var ar=W/H;el._ar=ar;
+  var wid=el._wid;if(wid&&!narrow&&place[wid]){var ww=DATA.works.find(function(x){return x.id===wid});if(ww){el.style.setProperty("--s",curS(ww)+"px");var p=fromFrac(ww,place[wid]);setPos(wid,p.x,p.y)}}
   el.style.setProperty("--aw",ar>=1?1:ar.toFixed(4));el.style.setProperty("--ah",ar>=1?(1/ar).toFixed(4):1);
   try{var k=Math.min(1,96/Math.max(W,H)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(W*k));c.height=Math.max(1,Math.round(H*k));
     var x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,c.width,c.height);el._alpha={w:c.width,h:c.height,d:x.getImageData(0,0,c.width,c.height).data}}catch(e){el._alpha=null}}
@@ -185,7 +188,7 @@ function attachDrag(el,w){
     if(e.pointerId!==pid)return;pid=null;el.classList.remove("dragging");
     if(!moved){openWork(w.id);return}
     var n=nodes[w.id];
-    if(!reduce&&performance.now()-lastT<80&&Math.hypot(vx,vy)>1.5){n.vx=vx;n.vy=vy;startAnim()}else settle(w)}
+    if(!reduce&&performance.now()-lastT<60&&Math.hypot(vx,vy)>6){n.vx=vx;n.vy=vy;startAnim()}else settle(w)}
   el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);
   el.addEventListener("click",function(e){if(e.detail===0)return;e.preventDefault()})}
 function settle(w){var n=nodes[w.id];if(!n)return;var s=deskSize();
@@ -196,8 +199,8 @@ function startAnim(){if(anim)return;
   var step=function(){var any=false,s=deskSize();
     Object.keys(nodes).forEach(function(id){var n=nodes[id];if(!n.vx&&!n.vy)return;
       var x=n.x+n.vx,y=n.y+n.vy,maxX=s.W-boxW(n.w),maxY=s.H-boxH(n.w)-8;
-      if(x<0){x=0;n.vx=-n.vx*.45}if(x>maxX){x=maxX;n.vx=-n.vx*.45}
-      if(y<TOP){y=TOP;n.vy=-n.vy*.45}if(y>maxY){y=maxY;n.vy=-n.vy*.45}
+      if(x<0){x=0;n.vx=0}if(x>maxX){x=maxX;n.vx=0}
+      if(y<TOP){y=TOP;n.vy=0}if(y>maxY){y=Math.max(TOP,maxY);n.vy=0}
       n.vx*=.9;n.vy*=.9;setPos(id,x,y);
       if(Math.abs(n.vx)<.15&&Math.abs(n.vy)<.15){n.vx=n.vy=0;settle(n.w)}else any=true});
     anim=any?requestAnimationFrame(step):null};
@@ -443,7 +446,7 @@ function buildWorkForm(form,w){
   var szOut=h("span",{class:"hint",style:"min-width:150px"});
   var autoBtn=h("button",{class:"btn sm"},"작업 크기로 맞추기");
   function szLabel(){var a=autoScale(w);szOut.textContent=w.scaleMode==="manual"?"직접 조절 ("+Math.round(iconScale(w)*100)+"%)":a?"작업 크기 기준 ("+Math.round(a*100)+"%)":"기본 크기";autoBtn.disabled=w.scaleMode!=="manual"}
-  function liveSize(){var n=nodes[w.id];if(n){n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px");var im=n.el.querySelector("img");if(im&&im._checkRes)im._checkRes()}}
+  function liveSize(){var n=nodes[w.id];if(n){n.el.style.setProperty("--s",curS(w)+"px");var im=n.el.querySelector("img");if(im&&im._checkRes)im._checkRes()}}
   rng.addEventListener("input",function(){w.scaleMode="manual";w.scale=+(+rng.value).toFixed(2);liveSize();szLabel()});
   rng.addEventListener("change",function(){layoutAll();markDirty("아이콘 크기")});
   autoBtn.addEventListener("click",function(){delete w.scaleMode;rng.value=iconScale(w);liveSize();layoutAll();szLabel();markDirty("아이콘 크기")});
