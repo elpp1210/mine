@@ -37,7 +37,9 @@
       ],
       "scale": 1,
       "x": 0.0657,
-      "y": 0.1
+      "y": 0.1,
+      "thumb": "images/thumbs/w01-lj5f.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/25ac258b-76f8-47a7-a499-3e701bfee765"
     },
     {
       "id": "w02",
@@ -68,7 +70,9 @@
       ],
       "scale": 1,
       "x": 0.1971,
-      "y": 0.1
+      "y": 0.1,
+      "thumb": "images/thumbs/w02-428z.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/ac4292ed-c6c7-451c-acbc-f72a663ab3e5"
     },
     {
       "id": "w03",
@@ -95,7 +99,9 @@
       ],
       "scale": 1,
       "x": 0.3286,
-      "y": 0.1
+      "y": 0.1,
+      "thumb": "images/thumbs/w03-33al.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/bc241a02-592d-440e-a7ab-1098f8aa3223"
     },
     {
       "id": "w04",
@@ -114,7 +120,9 @@
       ],
       "scale": 1,
       "x": 0.46,
-      "y": 0.1
+      "y": 0.1,
+      "thumb": "images/thumbs/w04-u1l3.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/38462cb7-8f69-46a7-85ca-6d91e5242bb6"
     },
     {
       "id": "w05",
@@ -133,7 +141,9 @@
       ],
       "scale": 1,
       "x": 0.5914,
-      "y": 0.1
+      "y": 0.1,
+      "thumb": "images/thumbs/w05-05b0.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/d00afcb8-0967-4f4e-8c37-f25a3d8f4775"
     },
     {
       "id": "w06",
@@ -156,7 +166,9 @@
       ],
       "scale": 1,
       "x": 0.7229,
-      "y": 0.1
+      "y": 0.1,
+      "thumb": "images/thumbs/w06-m0cj.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/c8c9eadd-41dc-41d9-88d2-e271d889da4f"
     },
     {
       "id": "w07",
@@ -179,7 +191,9 @@
       ],
       "scale": 1,
       "x": 0.8543,
-      "y": 0.1
+      "y": 0.1,
+      "thumb": "images/thumbs/w07-3on0.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/934c6f65-f63f-4751-9cb9-8522ae464476"
     },
     {
       "id": "w08",
@@ -198,7 +212,9 @@
       ],
       "scale": 1,
       "x": 0.0657,
-      "y": 0.3
+      "y": 0.3,
+      "thumb": "images/thumbs/w08-q78s.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/12797876-9ec9-44e0-9263-6d10cf621c2c"
     },
     {
       "id": "w09",
@@ -217,7 +233,9 @@
       ],
       "scale": 1,
       "x": 0.1971,
-      "y": 0.3
+      "y": 0.3,
+      "thumb": "images/thumbs/w09-b0zr.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/41723346-23fc-403d-aebe-a678f8c0bcef"
     },
     {
       "id": "w10",
@@ -240,7 +258,9 @@
       ],
       "scale": 1,
       "x": 0.3286,
-      "y": 0.3
+      "y": 0.3,
+      "thumb": "images/thumbs/w10-dkob.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/8235e04a-fcf7-465d-bae4-b2992e06a524"
     },
     {
       "id": "w11",
@@ -263,7 +283,9 @@
       ],
       "scale": 1,
       "x": 0.46,
-      "y": 0.3
+      "y": 0.3,
+      "thumb": "images/thumbs/w11-xgz2.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/bce3cd10-9728-4d06-bf8a-02b27f5f2d5f"
     },
     {
       "id": "w12",
@@ -290,7 +312,9 @@
       ],
       "scale": 1,
       "x": 0.5914,
-      "y": 0.3
+      "y": 0.3,
+      "thumb": "images/thumbs/w12-qzut.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/a35a6710-e5dd-4ec4-8665-109b7be2b7a9"
     },
     {
       "id": "w13",
@@ -313,7 +337,9 @@
       ],
       "scale": 1,
       "x": 0.7229,
-      "y": 0.3
+      "y": 0.3,
+      "thumb": "images/thumbs/w13-m1a3.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/bbde0765-e890-4e66-9605-44de4a28fd57"
     },
     {
       "id": "w14",
@@ -332,7 +358,9 @@
       ],
       "scale": 1,
       "x": 0.8543,
-      "y": 0.3
+      "y": 0.3,
+      "thumb": "images/thumbs/w14-d6it.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/90d86ddf-e4f8-4100-900e-276ec7fc4b11"
     },
     {
       "id": "w15",
@@ -355,7 +383,9 @@
       ],
       "scale": 1,
       "x": 0.0657,
-      "y": 0.5
+      "y": 0.5,
+      "thumb": "images/thumbs/w15-lieu.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/67ebca73-8745-431f-b871-af085b86cda9"
     },
     {
       "id": "w16",
@@ -374,7 +404,9 @@
       ],
       "scale": 1,
       "x": 0.1971,
-      "y": 0.5
+      "y": 0.5,
+      "thumb": "images/thumbs/w16-wesl.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/34a725f7-7cbc-4bcd-be77-01a6e1a35ec4"
     },
     {
       "id": "w17",
@@ -405,7 +437,9 @@
       ],
       "scale": 1,
       "x": 0.3286,
-      "y": 0.5
+      "y": 0.5,
+      "thumb": "images/thumbs/w17-dqmv.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/c1b4c717-a58b-4f5a-807d-56ddd88d78f7"
     },
     {
       "id": "w18",
@@ -424,7 +458,9 @@
       ],
       "scale": 1,
       "x": 0.46,
-      "y": 0.5
+      "y": 0.5,
+      "thumb": "images/thumbs/w18-m3cq.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/80a36d83-f0bb-4161-ad23-911410d04f47"
     },
     {
       "id": "w19",
@@ -455,7 +491,9 @@
       ],
       "scale": 1,
       "x": 0.5914,
-      "y": 0.5
+      "y": 0.5,
+      "thumb": "images/thumbs/w19-smwg.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/562f76d3-ad76-4ed3-a2dd-8e386eb24704"
     },
     {
       "id": "w20",
@@ -486,7 +524,9 @@
       ],
       "scale": 1,
       "x": 0.7229,
-      "y": 0.5
+      "y": 0.5,
+      "thumb": "images/thumbs/w20-2swh.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/b0c1b136-42aa-4358-96c6-530d052823db"
     },
     {
       "id": "w21",
@@ -505,7 +545,9 @@
       ],
       "scale": 1,
       "x": 0.8543,
-      "y": 0.5
+      "y": 0.5,
+      "thumb": "images/thumbs/w21-ax1f.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/0618b786-c64f-442c-897d-e45dc68d9d28"
     },
     {
       "id": "w22",
@@ -524,7 +566,9 @@
       ],
       "scale": 1,
       "x": 0.0657,
-      "y": 0.7
+      "y": 0.7,
+      "thumb": "images/thumbs/w22-69z4.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/016435c0-e4fd-43e6-986e-c33093aba7a1"
     },
     {
       "id": "w23",
@@ -543,7 +587,9 @@
       ],
       "scale": 1,
       "x": 0.1971,
-      "y": 0.7
+      "y": 0.7,
+      "thumb": "images/thumbs/w23-sjrx.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/3ebb9ae8-1ec6-4bed-b27f-bcf1fc11eacc"
     },
     {
       "id": "w24",
@@ -570,7 +616,9 @@
       ],
       "scale": 1,
       "x": 0.3286,
-      "y": 0.7
+      "y": 0.7,
+      "thumb": "images/thumbs/w24-mcmi.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/6c0ca765-f44d-406a-ad9d-48175641c712"
     },
     {
       "id": "w25",
@@ -589,7 +637,9 @@
       ],
       "scale": 1,
       "x": 0.46,
-      "y": 0.7
+      "y": 0.7,
+      "thumb": "images/thumbs/w25-k860.webp",
+      "thumbOf": "https://github.com/user-attachments/assets/52169802-1826-48da-bb03-8011c87f9bc3"
     }
   ],
   "cv": [
