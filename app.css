@@ -15,8 +15,8 @@ body{margin:0}img{max-width:100%}[hidden]{display:none!important}
   --f-ui:"S-CoreDream",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
   --f-read:var(--f-ui);
   --f-mono:var(--f-ui);
-  --f-bar:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --f-bar-num:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --f-bar:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI","Malgun Gothic","Noto Sans KR",sans-serif;
+  --f-bar-num:var(--f-bar);
   --label:#1e201c;
   --label-shadow:rgba(255,255,255,.55);
   color-scheme:light;
@@ -45,7 +45,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 .mb-spore[aria-pressed="true"]{background:color-mix(in srgb,var(--ink) 12%,transparent)}
 .spores{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
 @media (max-width:720px){.mb-spore-t{display:none}}
-.mb-clock{font-family:var(--f-bar-num);font-size:12px;font-variant-numeric:tabular-nums;padding:0 6px;white-space:nowrap}
+.mb-clock{font-family:var(--f-bar-num);font-size:13px;font-variant-numeric:tabular-nums;padding:0 6px;white-space:nowrap}
 .gear{position:fixed;z-index:450;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));width:40px;height:40px;border-radius:10px;border:0;padding:0;cursor:pointer;display:grid;place-items:center;
   background:linear-gradient(#9a9ca1,#6d7075);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 4px 12px rgba(0,0,0,.22);opacity:.55;transition:opacity .2s,transform .2s}
 .gear:hover,.gear:focus-visible{opacity:1;transform:rotate(30deg)}

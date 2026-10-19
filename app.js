@@ -75,7 +75,7 @@ var menubar=h("nav",{class:"menubar","aria-label":"메뉴"},h("div",{class:"row"
 root.appendChild(desk);root.appendChild(menubar);root.appendChild(adminBtn);
 function renderName(){nameBtn.textContent=DATA.site.name||"작가 이름"}
 function tick(){var d=new Date();var days=["일","월","화","수","목","금","토"];
-  clock.textContent=(d.getMonth()+1)+"월 "+d.getDate()+"일 ("+days[d.getDay()]+") "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
+  var hh=d.getHours();clock.textContent=(d.getMonth()+1)+"월 "+d.getDate()+"일 ("+days[d.getDay()]+") "+(hh<12?"오전 ":"오후 ")+((hh%12)||12)+":"+String(d.getMinutes()).padStart(2,"0")}
 tick();setInterval(tick,15000);
 
 /* ---------- desktop icons ---------- */
