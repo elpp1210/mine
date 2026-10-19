@@ -36,8 +36,8 @@
         }
       ],
       "scale": 3,
-      "x": 0.1417,
-      "y": 0.0083,
+      "x": 0.8785,
+      "y": 0.257,
       "thumb": "images/thumbs/w01-bujw.webp",
       "thumbOf": "images/cutouts/w01-h34f.png",
       "iconOrig": "https://github.com/user-attachments/assets/25ac258b-76f8-47a7-a499-3e701bfee765",
@@ -71,9 +71,9 @@
           "caption": ""
         }
       ],
-      "scale": 1.4,
-      "x": 0.1971,
-      "y": 0.1,
+      "scale": 1.9,
+      "x": 0.063,
+      "y": 0.7668,
       "thumb": "images/thumbs/w02-z3s4.webp",
       "thumbOf": "images/cutouts/w02-asvk.png",
       "iconOrig": "https://github.com/user-attachments/assets/ac4292ed-c6c7-451c-acbc-f72a663ab3e5",
@@ -104,8 +104,8 @@
         }
       ],
       "scale": 1.95,
-      "x": 0.4694,
-      "y": 0.0252,
+      "x": 0.468,
+      "y": 1,
       "thumb": "images/thumbs/w03-ijf8.webp",
       "thumbOf": "images/uploads/2026-10-19-33rxo9.png",
       "cutout": true,
@@ -127,8 +127,8 @@
         }
       ],
       "scale": 1.25,
-      "x": 0.4029,
-      "y": 0.2095,
+      "x": 0.119,
+      "y": 0.2835,
       "thumb": "images/thumbs/w04-mcc0.webp",
       "thumbOf": "images/cutouts/w04-ix0c.png",
       "iconOrig": "https://github.com/user-attachments/assets/38462cb7-8f69-46a7-85ca-6d91e5242bb6",
@@ -151,8 +151,8 @@
         }
       ],
       "scale": 0.7,
-      "x": 0.5914,
-      "y": 0.1,
+      "x": 0.2429,
+      "y": 0.4026,
       "thumb": "images/thumbs/w05-iw43.webp",
       "thumbOf": "images/cutouts/w05-a7nk.png",
       "iconOrig": "https://github.com/user-attachments/assets/d00afcb8-0967-4f4e-8c37-f25a3d8f4775",
@@ -179,8 +179,8 @@
         }
       ],
       "scale": 1,
-      "x": 0.7229,
-      "y": 0.1,
+      "x": 0.2217,
+      "y": 0.6443,
       "thumb": "images/thumbs/w06-x1bi.webp",
       "thumbOf": "images/uploads/2026-10-19-lvrkty.png",
       "cutout": true
@@ -205,8 +205,8 @@
         }
       ],
       "scale": 1.55,
-      "x": 0.8543,
-      "y": 0.1,
+      "x": 0.6201,
+      "y": 0.7322,
       "thumb": "images/thumbs/w07-wm5e.webp",
       "thumbOf": "images/cutouts/w07-4alo.png",
       "iconOrig": "https://github.com/user-attachments/assets/934c6f65-f63f-4751-9cb9-8522ae464476",
@@ -229,8 +229,8 @@
         }
       ],
       "scale": 1,
-      "x": 0.0657,
-      "y": 0.3,
+      "x": 0.5567,
+      "y": 0.7776,
       "thumb": "images/thumbs/w08-ea2a.webp",
       "thumbOf": "images/cutouts/w08-mqxh.png",
       "iconOrig": "https://github.com/user-attachments/assets/12797876-9ec9-44e0-9263-6d10cf621c2c",
@@ -252,8 +252,8 @@
         }
       ],
       "scale": 2.2,
-      "x": 0.1971,
-      "y": 0.3,
+      "x": 0.1826,
+      "y": 0.9929,
       "thumb": "images/thumbs/w09-4la7.webp",
       "thumbOf": "images/cutouts/w09-ecgf.png",
       "iconOrig": "https://github.com/user-attachments/assets/41723346-23fc-403d-aebe-a678f8c0bcef",
@@ -280,8 +280,8 @@
         }
       ],
       "scale": 1,
-      "x": 0.3286,
-      "y": 0.3,
+      "x": 0.4059,
+      "y": 0.5002,
       "thumb": "images/thumbs/w10-hbil.webp",
       "thumbOf": "images/cutouts/w10-8c7t.png",
       "iconOrig": "https://github.com/user-attachments/assets/8235e04a-fcf7-465d-bae4-b2992e06a524",
@@ -338,8 +338,8 @@
         }
       ],
       "scale": 2.05,
-      "x": 0.5914,
-      "y": 0.3,
+      "x": 0.863,
+      "y": 0.0179,
       "thumb": "images/thumbs/w12-0pxk.webp",
       "thumbOf": "images/cutouts/w12-8hm6.png",
       "iconOrig": "https://github.com/user-attachments/assets/a35a6710-e5dd-4ec4-8665-109b7be2b7a9",
@@ -389,8 +389,8 @@
         }
       ],
       "scale": 1,
-      "x": 0.8543,
-      "y": 0.3,
+      "x": 0.7313,
+      "y": 0.8372,
       "thumb": "images/thumbs/w14-6fvu.webp",
       "thumbOf": "images/cutouts/w14-wwgr.png",
       "iconOrig": "https://github.com/user-attachments/assets/90d86ddf-e4f8-4100-900e-276ec7fc4b11",
@@ -440,8 +440,8 @@
         }
       ],
       "scale": 1,
-      "x": 0.1971,
-      "y": 0.5,
+      "x": 0.142,
+      "y": 0.7046,
       "thumb": "images/thumbs/w16-v0cl.webp",
       "thumbOf": "images/cutouts/w16-trdy.png",
       "iconOrig": "https://github.com/user-attachments/assets/34a725f7-7cbc-4bcd-be77-01a6e1a35ec4",
@@ -475,8 +475,8 @@
         }
       ],
       "scale": 1.65,
-      "x": 0.3286,
-      "y": 0.5,
+      "x": 0.7402,
+      "y": 0.0316,
       "thumb": "images/thumbs/w17-ak8p.webp",
       "thumbOf": "images/cutouts/w17-2rqa.png",
       "iconOrig": "https://github.com/user-attachments/assets/c1b4c717-a58b-4f5a-807d-56ddd88d78f7",
@@ -498,13 +498,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
-      "x": 0.46,
-      "y": 0.5,
+      "scale": 1.4,
+      "x": 0.3257,
+      "y": 0.0065,
       "thumb": "images/thumbs/w18-mlv4.webp",
       "thumbOf": "images/cutouts/w18-bdob.png",
       "iconOrig": "https://github.com/user-attachments/assets/80a36d83-f0bb-4161-ad23-911410d04f47",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w19",
@@ -593,8 +594,8 @@
         }
       ],
       "scale": 1,
-      "x": 0.8543,
-      "y": 0.5,
+      "x": 0.9981,
+      "y": 0.6558,
       "thumb": "images/thumbs/w21-cxy8.webp",
       "thumbOf": "images/cutouts/w21-9o30.png",
       "iconOrig": "https://github.com/user-attachments/assets/0618b786-c64f-442c-897d-e45dc68d9d28",
@@ -616,8 +617,8 @@
         }
       ],
       "scale": 1.35,
-      "x": 0.0657,
-      "y": 0.7,
+      "x": 0,
+      "y": 0.4048,
       "thumb": "images/thumbs/w22-mdeq.webp",
       "thumbOf": "images/cutouts/w22-kfzq.png",
       "iconOrig": "https://github.com/user-attachments/assets/016435c0-e4fd-43e6-986e-c33093aba7a1",
@@ -640,8 +641,8 @@
         }
       ],
       "scale": 1.05,
-      "x": 0.3614,
-      "y": 0.8177,
+      "x": 0.3145,
+      "y": 0.9478,
       "thumb": "images/thumbs/w23-fban.webp",
       "thumbOf": "images/uploads/2026-10-19-rpltxt.png",
       "cutout": true,
@@ -694,13 +695,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
-      "x": 0.46,
-      "y": 0.7,
+      "scale": 1.1,
+      "x": 0.4544,
+      "y": 0.7614,
       "thumb": "images/thumbs/w25-yslv.webp",
       "thumbOf": "images/cutouts/w25-an9a.png",
       "iconOrig": "https://github.com/user-attachments/assets/52169802-1826-48da-bb03-8011c87f9bc3",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     }
   ],
   "cv": [
