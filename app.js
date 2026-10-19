@@ -12,7 +12,7 @@ var DATA={site:{},works:[],cv:[],statement:{ko:"",en:""}};
 function normalize(d){d=d||{};d.site=d.site||{};
   d.works=(d.works||[]).map(function(w,i){w=w||{};w.id=w.id||("w"+i);
     var im=w.images;if(im&&!Array.isArray(im))im=[im];
-    w.images=(im||[]).filter(Boolean).map(function(x){return typeof x==="object"?{src:x.src||"",caption:x.caption||""}:{src:String(x),caption:""}}).filter(function(x){return x.src});
+    w.images=(im||[]).filter(Boolean).map(function(x){if(typeof x!=="object")return {src:String(x),caption:""};var o={src:x.src||"",caption:x.caption||""};if(x.opt){o.opt=x.opt;o.sm=x.sm;o.optOf=x.optOf}return o}).filter(function(x){return x.src});
     w.scale=+w.scale||1;w.x=(w.x===""||w.x==null)?null:+w.x;w.y=(w.y===""||w.y==null)?null:+w.y;return w});
   d.cv=(d.cv||[]).map(function(c){c=c||{};c.items=c.items||[];return c});d.statement=d.statement||{ko:"",en:""};return d}
 var canEdit=false, dirty=false;
@@ -249,10 +249,16 @@ function openWork(id){
   var mainImg=h("img",{alt:w.title||"",decoding:"async"});mainImg.addEventListener("error",function(){if(mainImg.dataset.full&&mainImg.src!==mainImg.dataset.full)mainImg.src=mainImg.dataset.full});
   var cap=h("p",{class:"work-cap"});
   var thumbs=h("div",{class:"thumbs"});
-  function show(i){var p=pics[i]||{};mainImg.dataset.full=imgSrc(p);mainImg.src=sized(p,Math.min(1800,Math.round(900*(window.devicePixelRatio||1))),80);
-    [i+1,i-1].forEach(function(j){if(pics[j]){var pre=new Image();pre.src=sized(pics[j],Math.min(1800,Math.round(900*(window.devicePixelRatio||1))),80)}});mainImg.className=(i===cutIdx)?"cut":"";cap.textContent=p.caption||defCap;
+  function bigOf(p){return p.opt?imgSrc(p.opt):sized(p,Math.min(1800,Math.round(900*(window.devicePixelRatio||1))),80)}
+  function smallOf(p){return p.sm?imgSrc(p.sm):sized(p,200)}
+  var token=0;
+  function show(i){var p=pics[i]||{},my=++token,hi=bigOf(p);mainImg.dataset.full=imgSrc(p);
+    mainImg.className=(i===cutIdx)?"cut":"";cap.textContent=p.caption||defCap;
+    if(p.sm||!p.opt){mainImg.src=smallOf(p);mainImg.classList.add("soft")}
+    var pre=new Image();pre.onload=function(){if(my===token){mainImg.src=hi;mainImg.classList.remove("soft")}};pre.onerror=function(){if(my===token){mainImg.src=mainImg.dataset.full;mainImg.classList.remove("soft")}};pre.src=hi;
+    [i+1,i-1].forEach(function(j){if(pics[j]){var q=new Image();q.src=bigOf(pics[j])}});
     Array.prototype.forEach.call(thumbs.children,function(t,j){t.setAttribute("aria-current",j===i?"true":"false")})}
-  if(pics.length>1)pics.forEach(function(p,i){thumbs.appendChild(h("button",{class:"thumb","aria-label":(i+1)+"번째 이미지",style:"background-image:url(\""+sized(p,160)+"\")",onclick:function(){show(i)}}))});
+  if(pics.length>1)pics.forEach(function(p,i){thumbs.appendChild(h("button",{class:"thumb","aria-label":(i+1)+"번째 이미지",style:"background-image:url(\""+(p.sm?imgSrc(p.sm):sized(p,160))+"\")",onclick:function(){show(i)}}))});
   var meta=h("dl",{class:"meta"});
   [["분류",w.type,1],["연도",w.year,0],["재료",w.medium,1],["크기",w.size,0]].forEach(function(r){if(r[1]){meta.appendChild(h("dt",{text:r[0]}));meta.appendChild(h("dd",{class:r[2]?"txt":null,text:r[1]}))}});
   var body=h("div",{class:"work"},
@@ -338,6 +344,24 @@ function upload(file,max,forcePng){
   .catch(function(e){throw new Error(e.status===401?"관리 열쇠가 만료됐거나 틀렸어요. 다시 로그인해 주세요.":e.status===403||e.status===404?"이 열쇠로는 올릴 수 없어요. 열쇠 권한의 Contents가 Read and write인지 확인해 주세요.":(e.message||"업로드에 실패했어요."))})}
 function putBlob(p,b){return queueFile(p,b)}
 function thumbPath(w){return "images/thumbs/"+w.id+"-"+Math.random().toString(36).slice(2,6)+".webp"}
+function canvasResize(blob,max,q){return new Promise(function(res,rej){var url=URL.createObjectURL(blob),im=new Image();
+  im.onload=function(){var r=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*r);c.height=Math.round(im.naturalHeight*r);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){b?res(b):rej(new Error("사진을 줄이지 못했어요."))},"image/webp",q)};
+  im.onerror=function(){URL.revokeObjectURL(url);rej(new Error("사진을 읽지 못했어요."))};im.src=url})}
+function photoBlob(src){var u=imgSrc(src);
+  if(/^https:/.test(u)&&!PREVIEW[src])return fetch(sized(src,1600,82)).then(function(r){if(!r.ok)throw new Error("사진을 불러오지 못했어요 ("+r.status+").");return r.blob()});
+  return fetch(u).then(function(r){if(!r.ok)throw new Error("사진을 불러오지 못했어요 ("+r.status+").");return r.blob()}).then(function(b){return canvasResize(b,1600,.82)})}
+function needOpt(p){return p&&p.src&&(!p.opt||p.optOf!==p.src)}
+function optimizePhotos(btn,msg,done){
+  var todo=[];DATA.works.forEach(function(w){(w.images||[]).forEach(function(p,i){if(needOpt(p))todo.push([w,p,i])})});
+  var n=todo.length,ok=0,fail=0;if(!n){msg.textContent="모든 사진이 이미 가벼워요.";return}
+  btn.disabled=true;msg.textContent="사진 줄이는 중… 0/"+n;
+  todo.reduce(function(pr,t){return pr.then(function(){var w=t[0],p=t[1],tag=w.id+"-"+t[2]+"-"+Math.random().toString(36).slice(2,6);
+    return photoBlob(p.src).then(function(big){return canvasResize(big,240,.75).then(function(sm){
+      return Promise.all([queueFile("images/photos/"+tag+".webp",big),queueFile("images/photos/"+tag+"-s.webp",sm)]).then(function(r){p.opt=r[0];p.sm=r[1];p.optOf=p.src;ok++})})})
+    .catch(function(){fail++}).then(function(){msg.textContent="사진 줄이는 중… "+(ok+fail)+"/"+n+" (이 창을 닫지 말아 주세요)"})})},Promise.resolve())
+  .then(function(){btn.disabled=false;if(ok)markDirty("사진 최적화");
+    msg.textContent=ok+"장을 가볍게 만들었어요"+(fail?", "+fail+"장은 실패했어요(다시 누르면 실패한 것만 다시 해요)":"")+". 아래 ‘저장하고 게시’를 눌러야 사이트에 올라가요.";if(done)done()})}
 function canvasThumb(blob){return new Promise(function(res,rej){var url=URL.createObjectURL(blob),im=new Image();
   im.onload=function(){var r=Math.min(1,640/Math.max(im.naturalWidth,im.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(im.naturalWidth*r);c.height=Math.round(im.naturalHeight*r);
     c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){b?res(b):rej(new Error("썸네일을 만들지 못했어요."))},"image/webp",.86)};
@@ -392,6 +416,10 @@ function setStatus(msg,kind){if(admStatus){admStatus.textContent=msg;admStatus.c
 /* --- works tab --- */
 function drawWorks(main){
   if(!admSel||!DATA.works.find(function(w){return w.id===admSel}))admSel=DATA.works[0]?DATA.works[0].id:null;
+  var heavyPh=0;DATA.works.forEach(function(w){(w.images||[]).forEach(function(p){if(needOpt(p))heavyPh++})});
+  if(heavyPh){var pb=h("button",{class:"btn sm primary"},"사진 가볍게 만들기"),pm=h("span",{text:"작업 창 사진 "+heavyPh+"장이 원본 크기라 열 때 느려요. 화면용으로 줄인 사본을 만들어 두면 바로 떠요. 원본은 그대로 남아요."});
+    pb.addEventListener("click",function(){optimizePhotos(pb,pm)});
+    main.appendChild(h("div",{class:"notice",style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},pm,pb))}
   var raw=DATA.works.filter(function(w){return w.icon&&!w.cutout}).length;
   if(raw){var cb=h("button",{class:"btn sm primary"},"누끼 자동으로 따기"),cm=h("span",{text:"누끼가 아닌 아이콘이 "+raw+"개 있어요. 버튼을 누르면 이 브라우저에서 배경을 하나씩 지워요. 한 개에 10초~1분쯤 걸려요."});
     cb.addEventListener("click",function(){cutoutAll(cb,cm)});
@@ -468,7 +496,7 @@ function buildWorkForm(form,w){
       capIn))});
     photos.appendChild(h("button",{class:"add-photo",onclick:function(){filePick(true,addPhotos)}},"+ 사진"))}
   function addPhotos(files){if(!files.length)return;w.images=w.images||[];var n=files.length,done=0;phMsg.textContent="올리는 중… 0/"+n;
-    files.reduce(function(p,f){return p.then(function(){return upload(f,2200,false).then(function(src){w.images.push({src:src,caption:""});done++;phMsg.textContent="올리는 중… "+done+"/"+n;drawPhotos()})})},Promise.resolve())
+    files.reduce(function(p,f){return p.then(function(){return upload(f,2200,false).then(function(src){var ent={src:src,caption:""};w.images.push(ent);return photoBlob(src).then(function(big){return canvasResize(big,240,.75).then(function(sm){return Promise.all([queueFile(src.replace(/\.[a-z]+$/,"")+"-v.webp",big),queueFile(src.replace(/\.[a-z]+$/,"")+"-s.webp",sm)]).then(function(r){ent.opt=r[0];ent.sm=r[1];ent.optOf=src})})}).catch(function(){});}).then(function(){done++;phMsg.textContent="올리는 중… "+done+"/"+n;drawPhotos()})})},Promise.resolve())
       .then(function(){phMsg.textContent=n+"장을 올렸어요. 캡션을 적고 ‘저장하고 게시’를 눌러 주세요.";markDirty("사진")}).catch(function(e){phMsg.textContent=e.message;if(done)markDirty("사진")})}
   drawPhotos();dnd(photos,addPhotos);
   form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"작품 사진"}),photos,phMsg));
