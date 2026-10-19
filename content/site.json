@@ -35,7 +35,7 @@
           "caption": ""
         }
       ],
-      "scale": 1.2,
+      "scale": 3,
       "x": 0.1417,
       "y": 0.0083,
       "thumb": "images/thumbs/w01-bujw.webp",
@@ -568,13 +568,14 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.75,
       "x": 0.7229,
       "y": 0.5,
       "thumb": "images/thumbs/w20-fwt9.webp",
       "thumbOf": "images/cutouts/w20-dmti.png",
       "iconOrig": "https://github.com/user-attachments/assets/b0c1b136-42aa-4358-96c6-530d052823db",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w21",
@@ -614,7 +615,7 @@
           "caption": ""
         }
       ],
-      "scale": 0.6,
+      "scale": 1.35,
       "x": 0.0657,
       "y": 0.7,
       "thumb": "images/thumbs/w22-mdeq.webp",
@@ -631,20 +632,20 @@
       "medium": "도자, 칸탈선",
       "size": "가변 설치",
       "desc": "우리는 종종 어떤 순간들을 알아차리지 못한 채 흘려보낸다. 너무 미세해서, 너무 가볍고 짧아서, 손에 잡히기도 전에 사라져버리는 찰나들. 하지만 어떤 ‘한순간’은, 비어 있던 공간의 분위기를 바꾸고, 전혀 새로운 세계의 시작이 되기도 한다. 이 작업은 내가 떠난 자리 위에 조용히 자라난 곰팡이 포자를 관찰하면서 시작되었다. 오랜 시간 비워진 공간, 그 안에 스며든 듯 번진 포자는 마치 내가 남긴 흔적을 따라 자라난 것처럼 느껴졌다. 그것들은 아주 부드럽고도 집요하게 빈자리를 메워갔고, 처음엔 거의 보이지 않던 움직임은 곧 조용한 시간의 흐름과 생명의 끈질김을 보여주었다. 이번 설치 작업은 바로 그 성장의 찰나—무형이 형체를 갖기 시작하는 순간—를 포착하려 했다. 포자처럼 생긴 형상들은 위로 뻗어 나가며, 누구도 차지하지 않던 공간을 서서히 점령해간다. 그것은 부재로 남은 자리를 채우는 존재의 씨앗이자, 흔적 위에 피어나는 조용한 생명의 증거이다. 눈에 띄지 않게 시작된 작은 흔들림은 결국 공간 전체로 퍼져나가며 분위기를 바꾸어 놓는다. 이 찰나들은 크고 요란하지 않지만, 조용히 어떤 돌이킬 수 없는 변화를 시작하게 한다. 이 작업을 통해 나는, 부재가 남긴 자국과 그 위에 자라나는 존재들, 그리고 보이지 않는 한순간의 무게를 이야기하고 싶었다. 그 정적 속에서 피어나는 생명의 조용한 확장을, 곰팡이의 방식으로 기록해 보고자 했다.",
-      "icon": "images/cutouts/w23-l4ek.png",
+      "icon": "images/uploads/2026-10-19-rpltxt.png",
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/3ebb9ae8-1ec6-4bed-b27f-bcf1fc11eacc",
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.05,
       "x": 0.3614,
       "y": 0.8177,
-      "thumb": "images/thumbs/w23-nkmh.webp",
-      "thumbOf": "images/cutouts/w23-l4ek.png",
-      "iconOrig": "https://github.com/user-attachments/assets/3ebb9ae8-1ec6-4bed-b27f-bcf1fc11eacc",
-      "cutout": true
+      "thumb": "images/thumbs/w23-fban.webp",
+      "thumbOf": "images/uploads/2026-10-19-rpltxt.png",
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w24",
