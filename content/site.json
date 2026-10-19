@@ -36,8 +36,8 @@
         }
       ],
       "scale": 5.95,
-      "x": 0.8785,
-      "y": 0.257,
+      "x": 0.9999,
+      "y": 0.983,
       "thumb": "images/thumbs/w01-bujw.webp",
       "thumbOf": "images/cutouts/w01-h34f.png",
       "iconOrig": "https://github.com/user-attachments/assets/25ac258b-76f8-47a7-a499-3e701bfee765",
@@ -710,11 +710,11 @@
       "cat": "학력",
       "items": [
         {
-          "year": "",
+          "year": "2024",
           "text": "동덕여자대학교 공예학과 도자공예디자인 전공 석사 졸업"
         },
         {
-          "year": "",
+          "year": "2021",
           "text": "동덕여자대학교 회화과 학사 졸업"
         }
       ]
