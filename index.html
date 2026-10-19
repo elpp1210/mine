@@ -314,7 +314,7 @@ function sizeMM(str){str=String(str||"");if(!str.trim())return null;if(/가변/.
   var cm=/cm/i.test(str)&&!/mm/i.test(str),m=/(^|[^a-z])m($|[^a-z])/i.test(str)&&!/mm|cm/i.test(str);
   var nums=(str.match(/\d+(?:\.\d+)?/g)||[]).map(Number).filter(function(n){return n>0});if(!nums.length)return null;
   var mx=Math.max.apply(null,nums);return mx*(cm?10:m?1000:1)}
-function autoScale(w){var mm=sizeMM(w.size);if(!mm)return null;var v=0.45+0.9*(Math.log10(mm)-1.85);return Math.round(Math.min(2,Math.max(0.5,v))*100)/100}
+function autoScale(w){var mm=sizeMM(w.size);if(!mm)return null;var v=0.55*Math.pow(mm/180,0.52);return Math.round(Math.min(2.4,Math.max(0.42,v))*100)/100}
 function iconScale(w){if(w.scaleMode==="manual")return +w.scale||1;return autoScale(w)||(+w.scale||1)}
 function boxW(w){return Math.round(BASE*iconScale(w))+24}
 function boxH(w){return Math.round(BASE*iconScale(w))+48}
@@ -613,7 +613,7 @@ function buildWorkForm(form,w){
   form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"바탕화면 아이콘 (누끼 이미지)"}),drop));
 
   /* icon size */
-  var rng=h("input",{type:"range",id:"sz-"+w.id,min:"0.4",max:"2.6",step:"0.05",style:"flex:1;min-width:140px"});rng.value=iconScale(w);
+  var rng=h("input",{type:"range",id:"sz-"+w.id,min:"0.3",max:"3",step:"0.05",style:"flex:1;min-width:140px"});rng.value=iconScale(w);
   var szOut=h("span",{class:"hint",style:"min-width:150px"});
   var autoBtn=h("button",{class:"btn sm"},"작업 크기로 맞추기");
   function szLabel(){var a=autoScale(w);szOut.textContent=w.scaleMode==="manual"?"직접 조절 ("+Math.round(iconScale(w)*100)+"%)":a?"작업 크기 기준 ("+Math.round(a*100)+"%)":"기본 크기";autoBtn.disabled=w.scaleMode!=="manual"}
