@@ -10,7 +10,7 @@
   "works": [
     {
       "id": "w01",
-      "title": "임시 정원",
+      "title": "임시정원",
       "year": "2026",
       "type": "조형",
       "medium": "도자",
@@ -36,7 +36,7 @@
         }
       ],
       "scale": 5.95,
-      "x": 0.9986,
+      "x": 0.9928,
       "y": 0.9764,
       "thumb": "images/thumbs/w01-bujw.webp",
       "thumbOf": "images/cutouts/w01-h34f.png",
@@ -137,7 +137,7 @@
     },
     {
       "id": "w05",
-      "title": "무언가의 자국",
+      "title": "흔적",
       "year": "2024",
       "type": "조명",
       "medium": "도자, 조명부품",
