@@ -704,6 +704,37 @@
       "iconOrig": "https://github.com/user-attachments/assets/52169802-1826-48da-bb03-8011c87f9bc3",
       "cutout": true,
       "scaleMode": "manual"
+    },
+    {
+      "id": "wmvfedklimqv8",
+      "title": "임지정원",
+      "year": "2026",
+      "medium": "도자, 조명 부품",
+      "size": "Ø 26 × 81cm",
+      "desc": "",
+      "icon": "",
+      "images": [
+        {
+          "src": "images/uploads/2026-10-19-1vhyma.jpg",
+          "caption": ""
+        },
+        {
+          "src": "images/uploads/2026-10-19-fo5grc.jpg",
+          "caption": ""
+        },
+        {
+          "src": "images/uploads/2026-10-19-q59833.jpg",
+          "caption": ""
+        },
+        {
+          "src": "images/uploads/2026-10-19-u4je6p.jpg",
+          "caption": ""
+        }
+      ],
+      "scale": 1,
+      "x": 0.6303345695660896,
+      "y": 0.5376069736227405,
+      "type": "조명"
     }
   ],
   "cv": [
