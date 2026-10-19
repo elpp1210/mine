@@ -163,7 +163,7 @@
       "medium": "도자, 조명부품",
       "size": "W250xD250xH1200mm",
       "desc": "",
-      "icon": "images/cutouts/w06-i3mx.png",
+      "icon": "images/uploads/2026-10-19-lvrkty.png",
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/c8c9eadd-41dc-41d9-88d2-e271d889da4f",
@@ -177,9 +177,8 @@
       "scale": 1,
       "x": 0.7229,
       "y": 0.1,
-      "thumb": "images/thumbs/w06-4pec.webp",
-      "thumbOf": "images/cutouts/w06-i3mx.png",
-      "iconOrig": "https://github.com/user-attachments/assets/c8c9eadd-41dc-41d9-88d2-e271d889da4f",
+      "thumb": "images/thumbs/w06-x1bi.webp",
+      "thumbOf": "images/uploads/2026-10-19-lvrkty.png",
       "cutout": true
     },
     {
