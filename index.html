@@ -59,7 +59,7 @@ button,input,textarea,select{font:inherit;color:inherit}
   border-radius:10px;user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform}
 .icon:active{cursor:grabbing}
 .icon .pic{display:grid;place-items:center;width:var(--s);height:var(--s);border-radius:8px;transition:transform .18s ease}
-.icon img{opacity:0;transition:opacity .35s ease;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none;
+.icon img{opacity:0;transition:opacity .35s ease;width:var(--s);height:var(--s);max-width:none;max-height:none;display:block;object-fit:contain;pointer-events:none;-webkit-user-drag:none;
   filter:drop-shadow(0 10px 14px rgba(0,0,0,.18)) drop-shadow(0 2px 3px rgba(0,0,0,.14))}
 .icon img.ok{opacity:1}
 .icon:hover .pic{transform:translateY(-3px) scale(1.03)}
@@ -334,11 +334,11 @@ function renderDesk(){
   DATA.works.forEach(function(w){
     var s=Math.round(BASE*iconScale(w));
     var el=h("button",{class:"icon",style:"--s:"+s+"px","aria-label":w.title+(w.year?", "+w.year:"")+" 열기"},
-      h("span",{class:"pic"},(function(){var im=h("img",{src:w.thumb?imgSrc(w.thumb):sized(w.icon,240),alt:"",draggable:"false",decoding:"async"});var upgraded=false;im.addEventListener("load",function(){
+      h("span",{class:"pic"},(function(){var im=h("img",{src:w.thumb?imgSrc(w.thumb):sized(w.icon,240),alt:"",draggable:"false",decoding:"async"});var upgraded=false;im._checkRes=function(){
       var need=Math.round(BASE*iconScale(w)*(window.devicePixelRatio||1));
-      if(!upgraded&&w.icon&&Math.max(im.naturalWidth,im.naturalHeight)<need*0.95){upgraded=true;var full=imgSrc(w.icon);var hi=/^https:/.test(full)?sized(w.icon,Math.min(1600,need)):full;
-        var pre=new Image();pre.onload=function(){im.src=hi};pre.src=hi}
-      im.classList.add("ok")});fallbackImg(im,w.icon);if(im.complete&&im.naturalWidth)im.classList.add("ok");return im})()),
+      if(!upgraded&&w.icon&&im.naturalWidth&&Math.max(im.naturalWidth,im.naturalHeight)<need*0.95){upgraded=true;var full=imgSrc(w.icon);var hi=/^https:/.test(full)?sized(w.icon,Math.min(1600,need)):full;
+        var pre=new Image();pre.onload=function(){im.src=hi};pre.src=hi}};
+    im.addEventListener("load",function(){im._checkRes();im.classList.add("ok")});fallbackImg(im,w.icon);if(im.complete&&im.naturalWidth)im.classList.add("ok");return im})()),
       h("span",{class:"lab",text:w.title||"제목 없음"}));
     nodes[w.id]={el:el,x:0,y:0,vx:0,vy:0,w:w};
     attachDrag(el,w);
@@ -621,7 +621,7 @@ function buildWorkForm(form,w){
   var szOut=h("span",{class:"hint",style:"min-width:150px"});
   var autoBtn=h("button",{class:"btn sm"},"작업 크기로 맞추기");
   function szLabel(){var a=autoScale(w);szOut.textContent=w.scaleMode==="manual"?"직접 조절 ("+Math.round(iconScale(w)*100)+"%)":a?"작업 크기 기준 ("+Math.round(a*100)+"%)":"기본 크기";autoBtn.disabled=w.scaleMode!=="manual"}
-  function liveSize(){var n=nodes[w.id];if(n){n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px")}}
+  function liveSize(){var n=nodes[w.id];if(n){n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px");var im=n.el.querySelector("img");if(im&&im._checkRes)im._checkRes()}}
   rng.addEventListener("input",function(){w.scaleMode="manual";w.scale=+(+rng.value).toFixed(2);liveSize();szLabel()});
   rng.addEventListener("change",function(){layoutAll();markDirty("아이콘 크기")});
   autoBtn.addEventListener("click",function(){delete w.scaleMode;rng.value=iconScale(w);liveSize();layoutAll();szLabel();markDirty("아이콘 크기")});
