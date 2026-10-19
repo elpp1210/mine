@@ -309,8 +309,15 @@ function gridPlace(){
   DATA.works.forEach(function(w,i){var c=i%cols,r=Math.floor(i/cols);
     var px=8+c*cellW+(cellW-boxW(w))/2, py=TOP+12+r*148;
     place[w.id]=toFrac(w,px,py)})}
-function boxW(w){return Math.round(BASE*(w.scale||1))+24}
-function boxH(w){return Math.round(BASE*(w.scale||1))+48}
+/* icon size: from the work's real size unless set by hand */
+function sizeMM(str){str=String(str||"");if(!str.trim())return null;if(/가변/.test(str))return 800;
+  var cm=/cm/i.test(str)&&!/mm/i.test(str),m=/(^|[^a-z])m($|[^a-z])/i.test(str)&&!/mm|cm/i.test(str);
+  var nums=(str.match(/\d+(?:\.\d+)?/g)||[]).map(Number).filter(function(n){return n>0});if(!nums.length)return null;
+  var mx=Math.max.apply(null,nums);return mx*(cm?10:m?1000:1)}
+function autoScale(w){var mm=sizeMM(w.size);if(!mm)return null;var v=0.45+0.9*(Math.log10(mm)-1.85);return Math.round(Math.min(2,Math.max(0.5,v))*100)/100}
+function iconScale(w){if(w.scaleMode==="manual")return +w.scale||1;return autoScale(w)||(+w.scale||1)}
+function boxW(w){return Math.round(BASE*iconScale(w))+24}
+function boxH(w){return Math.round(BASE*iconScale(w))+48}
 function toFrac(w,x,y){var s=deskSize();var aw=Math.max(1,s.W-boxW(w)),ah=Math.max(1,s.H-TOP-boxH(w)-8);
   return {fx:Math.min(1,Math.max(0,x/aw)),fy:Math.min(1,Math.max(0,(y-TOP)/ah))}}
 function fromFrac(w,p){var s=deskSize();var aw=Math.max(0,s.W-boxW(w)),ah=Math.max(0,s.H-TOP-boxH(w)-8);
@@ -325,7 +332,7 @@ function renderDesk(){
   iconsLayer.textContent="";nodes={};
   if(!DATA.works.length){iconsLayer.appendChild(h("div",{class:"desk-empty",text:canEdit?"아직 작업이 없어요. 오른쪽 위 ‘관리’에서 첫 작업을 추가하세요.":"작업이 곧 올라옵니다."}));return}
   DATA.works.forEach(function(w){
-    var s=Math.round(BASE*(w.scale||1));
+    var s=Math.round(BASE*iconScale(w));
     var el=h("button",{class:"icon",style:"--s:"+s+"px","aria-label":w.title+(w.year?", "+w.year:"")+" 열기"},
       h("span",{class:"pic"},(function(){var im=h("img",{src:w.thumb?imgSrc(w.thumb):sized(w.icon,240),alt:"",draggable:"false",decoding:"async"});im.addEventListener("load",function(){im.classList.add("ok")});fallbackImg(im,w.icon);if(im.complete&&im.naturalWidth)im.classList.add("ok");return im})()),
       h("span",{class:"lab",text:w.title||"제목 없음"}));
@@ -582,13 +589,14 @@ function txtField(label,val,on,o){o=o||{};var id="f-"+label.replace(/\s/g,"")+(o
   if(o.ph)inp.placeholder=o.ph;
   inp.addEventListener("input",function(){on(inp.value);markDirty()});
   return h("div",{class:"field"},h("label",{for:id,text:label}),inp,o.hint?h("div",{class:"hint",text:o.hint}):null)}
+var sizeHook=null;
 function buildWorkForm(form,w){
   function refreshDesk(){var n=nodes[w.id];if(n){n.el.querySelector(".lab").textContent=w.title||"제목 없음";n.el.querySelector("img").src=w.thumb?imgSrc(w.thumb):imgSrc(w.icon)}
     var it=document.querySelector('.wk-item[aria-current="true"] .t');if(it){it.firstChild.textContent=w.title||"제목 없음";it.querySelector("small").textContent=w.year||"—"}}
   form.appendChild(txtField("제목",w.title,function(v){w.title=v;delete w.sample;refreshDesk()}));
   form.appendChild(h("div",{class:"grid2"},
     txtField("연도",w.year,function(v){w.year=v;refreshDesk()},{ph:"2025"}),
-    txtField("크기",w.size,function(v){w.size=v},{ph:"W520xD140xH2840mm"})));
+    txtField("크기",w.size,function(v){w.size=v;if(sizeHook)sizeHook()},{ph:"W520xD140xH2840mm"})));
   form.appendChild(h("div",{class:"grid2"},txtField("분류",w.type,function(v){w.type=v},{ph:"가구 / 조명 / 조형"}),txtField("재료 / 기법",w.medium,function(v){w.medium=v},{ph:"도자"})));
   form.appendChild(txtField("작품 설명",w.desc,function(v){w.desc=v},{area:true,hint:"빈 줄로 문단을 나눌 수 있어요."}));
 
@@ -604,11 +612,18 @@ function buildWorkForm(form,w){
   dnd(drop,function(fs){doIcon(fs[0])});
   form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"바탕화면 아이콘 (누끼 이미지)"}),drop));
 
-  /* size chips */
-  var chips=h("div",{class:"chips"});
-  [[.8,"작게"],[1,"보통"],[1.25,"크게"],[1.5,"아주 크게"]].forEach(function(c){chips.appendChild(h("button",{class:"chip","aria-pressed":Math.abs((w.scale||1)-c[0])<.08?"true":"false",onclick:function(){
-    w.scale=c[0];Array.prototype.forEach.call(chips.children,function(b){b.setAttribute("aria-pressed",b.textContent===c[1]?"true":"false")});renderDesk();markDirty("아이콘 크기")}},c[1]))});
-  form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"아이콘 크기"}),chips));
+  /* icon size */
+  var rng=h("input",{type:"range",id:"sz-"+w.id,min:"0.4",max:"2.6",step:"0.05",style:"flex:1;min-width:140px"});rng.value=iconScale(w);
+  var szOut=h("span",{class:"hint",style:"min-width:150px"});
+  var autoBtn=h("button",{class:"btn sm"},"작업 크기로 맞추기");
+  function szLabel(){var a=autoScale(w);szOut.textContent=w.scaleMode==="manual"?"직접 조절 ("+Math.round(iconScale(w)*100)+"%)":a?"작업 크기 기준 ("+Math.round(a*100)+"%)":"기본 크기";autoBtn.disabled=w.scaleMode!=="manual"}
+  function liveSize(){var n=nodes[w.id];if(n){n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px")}}
+  rng.addEventListener("input",function(){w.scaleMode="manual";w.scale=+(+rng.value).toFixed(2);liveSize();szLabel()});
+  rng.addEventListener("change",function(){layoutAll();markDirty("아이콘 크기")});
+  autoBtn.addEventListener("click",function(){delete w.scaleMode;rng.value=iconScale(w);liveSize();layoutAll();szLabel();markDirty("아이콘 크기")});
+  szLabel();sizeHook=function(){if(w.scaleMode!=="manual"){rng.value=iconScale(w);liveSize();szLabel()}};
+  form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"아이콘 크기"}),h("div",{class:"row-acts"},rng,szOut,autoBtn),
+    h("div",{class:"hint",text:"처음에는 ‘크기’ 칸의 실제 치수로 정해져요. 큰 작업일수록 아이콘도 커져요. 막대를 움직이면 바탕화면에서 바로 바뀌어요."})));
 
   /* photos */
   var photos=h("div",{class:"photos"});var phMsg=h("div",{class:"hint",text:"설치 전경, 디테일 컷 등. 사진마다 캡션을 적을 수 있고, 비워 두면 ‘제목, 연도, 재료, 크기’가 기본 캡션으로 붙어요."});
@@ -709,7 +724,8 @@ function drawSite(main){
     var s=deskSize(),cols=Math.max(3,Math.ceil(Math.sqrt(DATA.works.length*1.6))),rows=Math.ceil(DATA.works.length/cols);
     DATA.works.forEach(function(w,i){var c=i%cols,r=Math.floor(i/cols);w.x=+((c+.5)/cols*.92+.04-.04).toFixed(4);w.y=+((r+.5)/Math.max(rows,1)*.8).toFixed(4);place[w.id]={fx:w.x,fy:w.y}});
     layoutAll();markDirty("배치")}},"아이콘 바둑판 정렬");
-  wrap.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"배치"}),h("div",{class:"row-acts"},arrange),
+  var allAuto=h("button",{class:"btn",onclick:function(){DATA.works.forEach(function(w){delete w.scaleMode});renderDesk();markDirty("아이콘 크기");toast("모든 아이콘을 작업 크기에 맞췄어요.")}},"모든 아이콘 작업 크기로 맞추기");
+  wrap.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"배치"}),h("div",{class:"row-acts"},arrange,allAuto),
     h("div",{class:"hint",text:"관리 열쇠로 로그인한 상태에서 바탕화면 아이콘을 끌어 놓으면 그 위치가 저장돼요. 방문자가 옮긴 위치는 그 사람 화면에서만 바뀌어요. 휴대폰처럼 좁은 화면에서는 아이콘이 자동으로 줄 맞춰 놓입니다."})));
   if(DATA.site.sample)wrap.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"예시 데이터"}),
     h("div",{class:"row-acts"},h("button",{class:"btn danger",onclick:function(e){var b=e.currentTarget;if(!b.classList.contains("armed")){b.classList.add("armed");b.textContent="한 번 더 누르면 예시 작업을 모두 지워요";return}
