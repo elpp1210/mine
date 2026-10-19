@@ -70,7 +70,7 @@ var menubar=h("nav",{class:"menubar","aria-label":"메뉴"},h("div",{class:"row"
   nameBtn,
   h("button",{class:"mb-btn",onclick:function(){openList()}},"작업"),
   h("button",{class:"mb-btn",onclick:function(){openCV()}},"이력"),
-  h("button",{class:"mb-btn",onclick:function(){openStatement()}},"스테이트먼트"),
+  h("button",{class:"mb-btn",onclick:function(){openStatement()}},"작업노트"),
   h("span",{class:"mb-spacer"}),sporeBtn,clock));
 root.appendChild(desk);root.appendChild(menubar);root.appendChild(adminBtn);
 function renderName(){nameBtn.textContent=DATA.site.name||"작가 이름"}
@@ -291,15 +291,15 @@ function openStatement(){
   var bK=h("button",{"aria-pressed":"true",onclick:function(){set("ko")}},"한국어"),bE=h("button",{"aria-pressed":"false",onclick:function(){set("en")}},"English");
   function set(l){lang=l;bK.setAttribute("aria-pressed",l==="ko");bE.setAttribute("aria-pressed",l==="en");txt.textContent="";paras(DATA.statement[l]).forEach(function(p){txt.appendChild(p)});txt.lang=l}
   var doc=h("div",{class:"doc"},h("div",{class:"doc-head",style:"display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"},
-    h("h2",{text:"작가 노트"}),hasBoth?h("div",{class:"seg"},bK,bE):null),txt);
+    h("h2",{text:"작업노트"}),hasBoth?h("div",{class:"seg"},bK,bE):null),txt);
   set(lang);
-  openWindow("statement","스테이트먼트",doc,{w:620,h:580,hash:true,refresh:true})}
+  openWindow("statement","작업노트",doc,{w:620,h:580,hash:true,refresh:true})}
 function openInfo(){
   var dl=h("dl",{class:"meta"});
   if(DATA.site.email){dl.appendChild(h("dt",{text:"이메일"}));dl.appendChild(h("dd",null,h("span",{style:"user-select:all",text:DATA.site.email})))}
   if(DATA.site.instagram){var ig=DATA.site.instagram.replace(/^@/,"");dl.appendChild(h("dt",{text:"인스타그램"}));dl.appendChild(h("dd",null,h("a",{href:"https://instagram.com/"+encodeURIComponent(ig),target:"_blank",rel:"noopener",text:"@"+ig})))}
   var doc=h("div",{class:"doc"},h("div",{class:"doc-head"},h("h2",{text:DATA.site.name||""}),DATA.site.nameEn?h("p",{text:DATA.site.nameEn}):null),DATA.site.tagline?h("p",{class:"prose",style:"margin:0",text:DATA.site.tagline}):null,dl,
-    h("div",{class:"row-acts"},h("button",{class:"btn",onclick:function(){openCV()}},"이력 보기"),h("button",{class:"btn",onclick:function(){openStatement()}},"스테이트먼트 읽기")));
+    h("div",{class:"row-acts"},h("button",{class:"btn",onclick:function(){openCV()}},"이력 보기"),h("button",{class:"btn",onclick:function(){openStatement()}},"작업노트 읽기")));
   openWindow("info","정보",doc,{w:440,h:380,refresh:true})}
 
 /* ================= ADMIN ================= */
@@ -311,13 +311,13 @@ function openAdmin(){
   if(!GH.token||!canEdit){openLogin();return}
   var main=h("div",{class:"adm-main"});
   var tabs=h("div",{class:"adm-tabs",role:"tablist"});
-  [["works","작업"],["cv","이력"],["statement","스테이트먼트"],["site","사이트 설정"]].forEach(function(t){
+  [["works","작업"],["cv","이력"],["statement","작업노트"],["site","사이트 설정"]].forEach(function(t){
     tabs.appendChild(h("button",{role:"tab","aria-selected":admTab===t[0]?"true":"false",onclick:function(){admTab=t[0];Array.prototype.forEach.call(tabs.children,function(b,i){b.setAttribute("aria-selected",b===this?"true":"false")},this);draw()}},t[1]))});
   admStatus=h("div",{class:"adm-status",role:"status",text:dirty?"저장하지 않은 변경이 있어요.":"바탕화면에서 아이콘을 끌어 놓으면 그 배치도 함께 저장됩니다."});
   saveBtn=h("button",{class:"btn primary",disabled:!dirty,onclick:save},"저장하고 게시");
   var body=h("div",{class:"adm"},tabs,main,h("div",{class:"adm-foot"},admStatus,saveBtn));
   function draw(){main.textContent="";main.scrollTop=0;
-    if(DATA.site.sample)main.appendChild(h("div",{class:"notice",text:"지금 보이는 작업·이력·스테이트먼트는 모두 예시입니다. 실제 내용으로 바꾸거나 지워 주세요. 예시 작업에는 ‘예시’ 표시가 붙어 있어요."}));
+    if(DATA.site.sample)main.appendChild(h("div",{class:"notice",text:"지금 보이는 작업·이력·작업노트는 모두 예시입니다. 실제 내용으로 바꾸거나 지워 주세요. 예시 작업에는 ‘예시’ 표시가 붙어 있어요."}));
     ({works:drawWorks,cv:drawCV,statement:drawStatement,site:drawSite})[admTab](main)}
   draw();
   openWindow("admin","관리",body,{w:900,h:640});
@@ -441,7 +441,7 @@ function drawWorks(main){
   if(!w)form.appendChild(h("p",{style:"color:var(--ink-soft)",text:"‘+ 새 작업’으로 첫 작업을 추가하세요."}));
   else buildWorkForm(form,w);
   main.appendChild(h("div",{class:"wk"},list,form));
-  function rerender(){main.textContent="";if(DATA.site.sample)main.appendChild(h("div",{class:"notice",text:"지금 보이는 작업·이력·스테이트먼트는 모두 예시입니다. 실제 내용으로 바꾸거나 지워 주세요."}));drawWorks(main)}
+  function rerender(){main.textContent="";if(DATA.site.sample)main.appendChild(h("div",{class:"notice",text:"지금 보이는 작업·이력·작업노트는 모두 예시입니다. 실제 내용으로 바꾸거나 지워 주세요."}));drawWorks(main)}
 }
 function txtField(label,val,on,o){o=o||{};var id="f-"+label.replace(/\s/g,"")+(o.idx||"");
   var inp=o.area?h("textarea",{id:id,class:o.long?"long":null}):h("input",{type:o.type||"text",id:id});inp.value=val||"";
@@ -553,7 +553,7 @@ function drawCV(main){
 /* --- statement tab --- */
 function drawStatement(main){
   var wrap=h("div",{class:"pad"});
-  wrap.appendChild(txtField("스테이트먼트 (한국어)",DATA.statement.ko,function(v){DATA.statement.ko=v},{area:true,long:true,hint:"빈 줄로 문단을 나눌 수 있어요."}));
+  wrap.appendChild(txtField("작업노트 (한국어)",DATA.statement.ko,function(v){DATA.statement.ko=v},{area:true,long:true,hint:"빈 줄로 문단을 나눌 수 있어요."}));
   wrap.appendChild(txtField("Statement (English)",DATA.statement.en,function(v){DATA.statement.en=v},{area:true,long:true,hint:"비워 두면 한국어만 보입니다."}));
   wrap.appendChild(h("div",{class:"row-acts"},h("button",{class:"btn",onclick:function(){if(wins.statement)closeWin("statement");openStatement()}},"미리보기")));
   main.appendChild(wrap)}
