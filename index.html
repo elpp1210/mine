@@ -55,6 +55,11 @@ button,input,textarea,select{font:inherit;color:inherit}
 
 /* desktop */
 .desk{position:fixed;inset:0;overflow:hidden;touch-action:none}
+.desk.narrow{overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.desk.narrow>div:first-child{position:relative}
+.desk.narrow .icon{touch-action:pan-y;cursor:pointer}
+.desk.narrow .icon .lab{opacity:1;position:static;transform:none;white-space:normal;max-width:calc(var(--s) + 8px);font-size:11.5px;-webkit-line-clamp:2!important}
+.desk.narrow .icon:hover .pic{transform:none}
 .icon{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:6px;cursor:grab;
   border-radius:10px;user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform}
 .icon:active{cursor:grabbing}
@@ -195,7 +200,13 @@ button,input,textarea,select{font:inherit;color:inherit}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:900;background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:9px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 
 @media (max-width:720px){
-  .win{left:6px!important;top:calc(36px + env(safe-area-inset-top,0px))!important;width:calc(100vw - 12px)!important;height:calc(100% - 44px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important}
+  .win-bar{height:48px;cursor:default}
+  .light.min,.light.max{display:none}
+  .light.close{width:26px;height:26px;position:relative}
+  .light.close::after{content:"×";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:17px;line-height:1}
+  .win-title{margin-right:26px;font-size:14px}
+  .work-main img{max-height:58vh}
+  .win{position:fixed;left:6px!important;top:calc(36px + env(safe-area-inset-top,0px))!important;width:calc(100vw - 12px)!important;height:calc(100% - 44px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important}
   .work{grid-template-columns:minmax(0,1fr)}
   .work-main{min-height:200px}
   .doc{padding:22px 18px 32px}
@@ -323,8 +334,19 @@ function toFrac(w,x,y){var s=deskSize();var aw=Math.max(1,s.W-boxW(w)),ah=Math.m
 function fromFrac(w,p){var s=deskSize();var aw=Math.max(0,s.W-boxW(w)),ah=Math.max(0,s.H-TOP-boxH(w)-8);
   return {x:p.fx*aw,y:TOP+p.fy*ah}}
 function setPos(id,x,y){var n=nodes[id];if(!n)return;n.x=x;n.y=y;n.el.style.transform="translate("+Math.round(x)+"px,"+Math.round(y)+"px)"}
-function layoutAll(){DATA.works.forEach(function(w){var p=fromFrac(w,place[w.id]||{fx:.5,fy:.5});setPos(w.id,p.x,p.y)})}
-function initPlaces(){
+function layoutAll(){desk.classList.toggle("narrow",narrow);if(narrow){layoutNarrow();return}iconsLayer.style.height="";DATA.works.forEach(function(w){var n=nodes[w.id];if(n)n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px");var p=fromFrac(w,place[w.id]||{fx:.5,fy:.5});setPos(w.id,p.x,p.y)})}
+/* phones: a calm scrolling collection, sizes still follow the work */
+function layoutNarrow(){
+  var W=desk.clientWidth,cols=W<560?2:3,gap=14,pad=16,colW=(W-pad*2-gap*(cols-1))/cols,colY=[];for(var c=0;c<cols;c++)colY.push(TOP+18);
+  var sc=DATA.works.map(iconScale),mx=Math.max.apply(null,sc.concat([1])),mn=Math.min.apply(null,sc.concat([1]));
+  DATA.works.forEach(function(w,i){var n=nodes[w.id];if(!n)return;
+    var t=mx>mn?(sc[i]-mn)/(mx-mn):.5,ms=Math.round(colW*(0.5+0.5*t));
+    n.el.style.setProperty("--s",ms+"px");
+    var k=0;for(var c=1;c<cols;c++)if(colY[c]<colY[k]-1)k=c;
+    var x=pad+k*(colW+gap)+(colW-ms)/2-6,y=colY[k];setPos(w.id,x,y);
+    colY[k]=y+ms+12+40+gap});
+  iconsLayer.style.height=(Math.max.apply(null,colY)+70)+"px"}
+function initPlaces(){if(desk.clientWidth<720){narrow=true;return}
   narrow=desk.clientWidth<720;
   if(narrow){gridPlace()}else DATA.works.forEach(function(w){place[w.id]={fx:w.x==null?Math.random()*.9:w.x,fy:w.y==null?Math.random()*.8:w.y}})}
 
@@ -353,7 +375,7 @@ var anim=null;
 function attachDrag(el,w){
   var sx,sy,ox,oy,moved,lastT,lx,ly,vx,vy,pid=null;
   el.addEventListener("pointerdown",function(e){
-    if(e.button!==0)return;pid=e.pointerId;el.setPointerCapture(pid);
+    if(e.button!==0||narrow)return;pid=e.pointerId;el.setPointerCapture(pid);
     var n=nodes[w.id];n.vx=n.vy=0;sx=e.clientX;sy=e.clientY;ox=n.x;oy=n.y;moved=false;lastT=performance.now();lx=sx;ly=sy;vx=vy=0;
     el.style.zIndex=++zTop;select(w.id)});
   el.addEventListener("pointermove",function(e){
@@ -369,7 +391,7 @@ function attachDrag(el,w){
     var n=nodes[w.id];
     if(!reduce&&performance.now()-lastT<80&&Math.hypot(vx,vy)>1.5){n.vx=vx;n.vy=vy;startAnim()}else settle(w)}
   el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);
-  el.addEventListener("click",function(e){if(e.detail===0)return;e.preventDefault()})}
+  el.addEventListener("click",function(e){if(narrow){openWork(w.id);return}if(e.detail===0)return;e.preventDefault()})}
 function settle(w){var n=nodes[w.id];if(!n)return;var s=deskSize();
   var x=Math.min(Math.max(n.x,0),s.W-boxW(w)),y=Math.min(Math.max(n.y,TOP),s.H-boxH(w)-8);setPos(w.id,x,y);
   place[w.id]=toFrac(w,x,y);
@@ -384,7 +406,7 @@ function startAnim(){if(anim)return;
       if(Math.abs(n.vx)<.15&&Math.abs(n.vy)<.15){n.vx=n.vy=0;settle(n.w)}else any=true});
     anim=any?requestAnimationFrame(step):null};
   anim=requestAnimationFrame(step)}
-var rT;window.addEventListener("resize",function(){clearTimeout(rT);rT=setTimeout(function(){var was=narrow;narrow=desk.clientWidth<720;if(was!==narrow)initPlaces();layoutAll()},80)});
+var rT;window.addEventListener("resize",function(){clearTimeout(rT);rT=setTimeout(function(){var was=narrow;narrow=desk.clientWidth<720;if(was!==narrow&&!narrow)DATA.works.forEach(function(w){place[w.id]={fx:w.x==null?Math.random()*.9:w.x,fy:w.y==null?Math.random()*.8:w.y}});layoutAll()},80)});
 
 /* ---------- windows ---------- */
 var wins={}, cascade=0;
