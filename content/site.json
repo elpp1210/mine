@@ -178,12 +178,13 @@
           "caption": ""
         }
       ],
-      "scale": 1,
+      "scale": 1.85,
       "x": 0.2217,
       "y": 0.6443,
       "thumb": "images/thumbs/w06-x1bi.webp",
       "thumbOf": "images/uploads/2026-10-19-lvrkty.png",
-      "cutout": true
+      "cutout": true,
+      "scaleMode": "manual"
     },
     {
       "id": "w07",
