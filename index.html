@@ -55,11 +55,6 @@ button,input,textarea,select{font:inherit;color:inherit}
 
 /* desktop */
 .desk{position:fixed;inset:0;overflow:hidden;touch-action:none}
-.desk.narrow{overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.desk.narrow>div:first-child{position:relative}
-.desk.narrow .icon{touch-action:pan-y;cursor:pointer}
-.desk.narrow .icon .lab{opacity:1;position:static;transform:none;white-space:normal;max-width:calc(var(--s) + 8px);font-size:11.5px;-webkit-line-clamp:2!important}
-.desk.narrow .icon:hover .pic{transform:none}
 .icon{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:6px;cursor:grab;
   border-radius:10px;user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform}
 .icon:active{cursor:grabbing}
@@ -327,25 +322,38 @@ function sizeMM(str){str=String(str||"");if(!str.trim())return null;if(/가변/.
   var mx=Math.max.apply(null,nums);return mx*(cm?10:m?1000:1)}
 function autoScale(w){var mm=sizeMM(w.size);if(!mm)return null;var v=0.55*Math.pow(mm/180,0.52);return Math.round(Math.min(2.4,Math.max(0.42,v))*100)/100}
 function iconScale(w){if(w.scaleMode==="manual")return +w.scale||1;return autoScale(w)||(+w.scale||1)}
-function boxW(w){return Math.round(BASE*iconScale(w))+24}
-function boxH(w){return Math.round(BASE*iconScale(w))+48}
+function curS(w){return narrow&&msz[w.id]?msz[w.id]:Math.round(BASE*iconScale(w))}
+function boxW(w){return curS(w)+(narrow?12:24)}
+function boxH(w){return curS(w)+(narrow?12:48)}
 function toFrac(w,x,y){var s=deskSize();var aw=Math.max(1,s.W-boxW(w)),ah=Math.max(1,s.H-TOP-boxH(w)-8);
   return {fx:Math.min(1,Math.max(0,x/aw)),fy:Math.min(1,Math.max(0,(y-TOP)/ah))}}
 function fromFrac(w,p){var s=deskSize();var aw=Math.max(0,s.W-boxW(w)),ah=Math.max(0,s.H-TOP-boxH(w)-8);
   return {x:p.fx*aw,y:TOP+p.fy*ah}}
 function setPos(id,x,y){var n=nodes[id];if(!n)return;n.x=x;n.y=y;n.el.style.transform="translate("+Math.round(x)+"px,"+Math.round(y)+"px)"}
-function layoutAll(){desk.classList.toggle("narrow",narrow);if(narrow){layoutNarrow();return}iconsLayer.style.height="";DATA.works.forEach(function(w){var n=nodes[w.id];if(n)n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px");var p=fromFrac(w,place[w.id]||{fx:.5,fy:.5});setPos(w.id,p.x,p.y)})}
-/* phones: a calm scrolling collection, sizes still follow the work */
+function layoutAll(){if(narrow){layoutNarrow();return}DATA.works.forEach(function(w){var n=nodes[w.id];if(n)n.el.style.setProperty("--s",Math.round(BASE*iconScale(w))+"px");var p=fromFrac(w,place[w.id]||{fx:.5,fy:.5});setPos(w.id,p.x,p.y)})}
+/* phones: same desktop, icons scaled to fit one screen and scattered without overlap */
+var msz={},mpos=null,mW=0;
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function packNarrow(){
+  var W=desk.clientWidth,H=desk.clientHeight,x0=6,y0=TOP+4,x1=W-6,y1=H-58,A=(x1-x0)*(y1-y0);
+  var raw=DATA.works.map(function(w){return BASE*iconScale(w)}),sum=raw.reduce(function(a,r){return a+(r+16)*(r+16)},0);
+  var k=Math.min(1,Math.sqrt(0.52*A/Math.max(1,sum)));
+  var items=DATA.works.map(function(w,i){var m=Math.max(38,Math.round(raw[i]*k));msz[w.id]=m;return {id:w.id,b:m+12,x:0,y:0}});
+  var order=items.slice().sort(function(a,b){return b.b-a.b}),placed=[],R=rng(20261020);
+  function ov(a,b){var dx=Math.min(a.x+a.b,b.x+b.b)-Math.max(a.x,b.x),dy=Math.min(a.y+a.b,b.y+b.b)-Math.max(a.y,b.y);return dx>0&&dy>0?dx*dy:0}
+  order.forEach(function(it){var best=null,bs=Infinity;
+    for(var t=0;t<160;t++){it.x=x0+R()*Math.max(1,x1-x0-it.b);it.y=y0+R()*Math.max(1,y1-y0-it.b);var sc=0;placed.forEach(function(p){sc+=ov(it,p)});if(sc<bs){bs=sc;best=[it.x,it.y]}if(sc===0)break}
+    it.x=best[0];it.y=best[1];placed.push(it)});
+  for(var it2=0;it2<80;it2++){var moved=false;
+    for(var a=0;a<items.length;a++)for(var c=a+1;c<items.length;c++){var p=items[a],q=items[c],dx=Math.min(p.x+p.b,q.x+q.b)-Math.max(p.x,q.x),dy=Math.min(p.y+p.b,q.y+q.b)-Math.max(p.y,q.y);
+      if(dx>0&&dy>0){moved=true;if(dx<dy){var sx=(p.x<q.x?-1:1)*dx/2;p.x+=sx;q.x-=sx}else{var sy=(p.y<q.y?-1:1)*dy/2;p.y+=sy;q.y-=sy}}}
+    items.forEach(function(p){p.x=Math.min(Math.max(p.x,x0),x1-p.b);p.y=Math.min(Math.max(p.y,y0),y1-p.b)});if(!moved)break}
+  mpos={};items.forEach(function(p){mpos[p.id]={x:p.x,y:p.y}});mW=W}
 function layoutNarrow(){
-  var W=desk.clientWidth,cols=W<560?2:3,gap=14,pad=16,colW=(W-pad*2-gap*(cols-1))/cols,colY=[];for(var c=0;c<cols;c++)colY.push(TOP+18);
-  var sc=DATA.works.map(iconScale),mx=Math.max.apply(null,sc.concat([1])),mn=Math.min.apply(null,sc.concat([1]));
-  DATA.works.forEach(function(w,i){var n=nodes[w.id];if(!n)return;
-    var t=mx>mn?(sc[i]-mn)/(mx-mn):.5,ms=Math.round(colW*(0.5+0.5*t));
-    n.el.style.setProperty("--s",ms+"px");
-    var k=0;for(var c=1;c<cols;c++)if(colY[c]<colY[k]-1)k=c;
-    var x=pad+k*(colW+gap)+(colW-ms)/2-6,y=colY[k];setPos(w.id,x,y);
-    colY[k]=y+ms+12+40+gap});
-  iconsLayer.style.height=(Math.max.apply(null,colY)+70)+"px"}
+  if(!mpos||Math.abs(desk.clientWidth-mW)>2||DATA.works.some(function(w){return !mpos[w.id]}))packNarrow();
+  var W=desk.clientWidth,H=desk.clientHeight;
+  DATA.works.forEach(function(w){var n=nodes[w.id];if(!n)return;var m=msz[w.id];n.el.style.setProperty("--s",m+"px");var p=mpos[w.id];
+    setPos(w.id,Math.min(Math.max(p.x,0),W-m-12),Math.min(Math.max(p.y,TOP),H-m-12))})}
 function initPlaces(){if(desk.clientWidth<720){narrow=true;return}
   narrow=desk.clientWidth<720;
   if(narrow){gridPlace()}else DATA.works.forEach(function(w){place[w.id]={fx:w.x==null?Math.random()*.9:w.x,fy:w.y==null?Math.random()*.8:w.y}})}
@@ -375,7 +383,7 @@ var anim=null;
 function attachDrag(el,w){
   var sx,sy,ox,oy,moved,lastT,lx,ly,vx,vy,pid=null;
   el.addEventListener("pointerdown",function(e){
-    if(e.button!==0||narrow)return;pid=e.pointerId;el.setPointerCapture(pid);
+    if(e.button!==0)return;pid=e.pointerId;el.setPointerCapture(pid);
     var n=nodes[w.id];n.vx=n.vy=0;sx=e.clientX;sy=e.clientY;ox=n.x;oy=n.y;moved=false;lastT=performance.now();lx=sx;ly=sy;vx=vy=0;
     el.style.zIndex=++zTop;select(w.id)});
   el.addEventListener("pointermove",function(e){
@@ -391,10 +399,10 @@ function attachDrag(el,w){
     var n=nodes[w.id];
     if(!reduce&&performance.now()-lastT<80&&Math.hypot(vx,vy)>1.5){n.vx=vx;n.vy=vy;startAnim()}else settle(w)}
   el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);
-  el.addEventListener("click",function(e){if(narrow){openWork(w.id);return}if(e.detail===0)return;e.preventDefault()})}
+  el.addEventListener("click",function(e){if(e.detail===0)return;e.preventDefault()})}
 function settle(w){var n=nodes[w.id];if(!n)return;var s=deskSize();
   var x=Math.min(Math.max(n.x,0),s.W-boxW(w)),y=Math.min(Math.max(n.y,TOP),s.H-boxH(w)-8);setPos(w.id,x,y);
-  place[w.id]=toFrac(w,x,y);
+  place[w.id]=toFrac(w,x,y);if(narrow&&mpos)mpos[w.id]={x:x,y:y};
   if(canEdit&&!narrow){w.x=+place[w.id].fx.toFixed(4);w.y=+place[w.id].fy.toFixed(4);markDirty("배치")}}
 function startAnim(){if(anim)return;
   var step=function(){var any=false,s=deskSize();
@@ -560,10 +568,13 @@ function trimAlpha(blob){return new Promise(function(res){var url=URL.createObje
     var o=document.createElement("canvas");o.width=maxX-minX+1;o.height=maxY-minY+1;o.getContext("2d").drawImage(c,minX,minY,o.width,o.height,0,0,o.width,o.height);
     var cover=(o.width*o.height)/(W*H);o.toBlob(function(b){res({blob:b,cover:cover})},"image/png")};
   im.onerror=function(){URL.revokeObjectURL(url);res(null)};im.src=url})}
-function srcBlob(w){var src=imgSrc(w.iconOrig||w.icon);
-  var u=(/^https:/.test(src)&&!PREVIEW[w.iconOrig||w.icon])?sized(w.iconOrig||w.icon,1200).replace("output=webp","output=png"):src;
-  return fetch(u).then(function(r){if(!r.ok)throw new Error("사진을 불러오지 못했어요 ("+r.status+").");return r.blob()})}
+function srcBlob(w){var ref=w.iconOrig||w.icon||(w.images&&w.images[0]&&w.images[0].src);
+  if(!ref)return Promise.reject(new Error("먼저 ‘누끼 이미지 올리기’나 아래 ‘작품 사진’에 사진을 올려 주세요. 그 사진에서 배경을 지워 드려요."));
+  var src=imgSrc(ref);var u=(/^https:/.test(src)&&!PREVIEW[ref])?sized(ref,1200).replace("output=webp","output=png"):src;
+  return fetch(u).then(function(r){var t=r.headers.get("content-type")||"";
+    if(!r.ok||(t&&!/^image\//.test(t)))throw new Error(r.status===404||/html/.test(t)?"방금 올린 사진이 아직 사이트에 반영되는 중이에요. 1~2분 뒤 다시 눌러 주세요.":"사진을 불러오지 못했어요 ("+r.status+").");return r.blob()})}
 function cutoutOne(w,onStep){
+  if(!(w.iconOrig||w.icon||(w.images&&w.images[0]&&w.images[0].src)))return Promise.reject(new Error("먼저 ‘누끼 이미지 올리기’나 아래 ‘작품 사진’에 사진을 올려 주세요. 그 사진에서 배경을 지워 드려요."));
   return loadBG().then(function(rb){onStep&&onStep("사진 불러오는 중");return srcBlob(w).then(function(b){onStep&&onStep("배경 지우는 중");return rb(b,{model:"isnet_fp16",output:{format:"image/png"}})})})
   .then(trimAlpha).then(function(t){if(!t)throw new Error("작품을 찾지 못했어요.");
     return putBlob("images/cutouts/"+w.id+"-"+Math.random().toString(36).slice(2,6)+".png",t.blob).then(function(path){
@@ -627,13 +638,13 @@ function buildWorkForm(form,w){
   form.appendChild(txtField("작품 설명",w.desc,function(v){w.desc=v},{area:true,hint:"빈 줄로 문단을 나눌 수 있어요."}));
 
   /* icon */
-  var icPrev=h("img",{src:imgSrc(w.icon),alt:"아이콘 미리보기"});
+  var icPrev=h("img",{src:imgSrc(w.icon),alt:"아이콘 미리보기"});icPrev.hidden=!w.icon;icPrev.addEventListener("load",function(){icPrev.hidden=false});
   var icMsg=h("div",{class:"hint",text:"배경을 지운 투명 PNG가 가장 잘 어울려요. 바탕화면 아이콘과 작업 창에 쓰입니다."});
   function doIcon(file){icMsg.textContent="올리는 중…";upload(file,1200,true).then(function(id){w.icon=id;w.cutout=true;delete w.iconOrig;delete w.sample;icPrev.src=imgSrc(id);
     icMsg.textContent="아이콘 썸네일 만드는 중…";return makeThumb(w).catch(function(){w.thumb="";})}).then(function(){refreshDesk();icMsg.textContent="올렸어요.";markDirty("아이콘")}).catch(function(e){icMsg.textContent=e.message})}
   var drop=h("div",{class:"drop"},icPrev,h("div",{class:"acts"},h("button",{class:"btn sm",onclick:function(){filePick(false,function(f){if(f[0])doIcon(f[0])})}},w.icon?"누끼 이미지 바꾸기":"누끼 이미지 올리기"),
     h("button",{class:"btn sm",onclick:function(e){var b=e.currentTarget;b.disabled=true;cutoutOne(w,function(st){icMsg.textContent=st+"…"}).then(function(){icPrev.src=imgSrc(w.icon);refreshDesk();icMsg.textContent="누끼를 땄어요. 마음에 들면 ‘저장하고 게시’를 눌러 주세요.";markDirty("누끼")},function(er){icMsg.textContent=er.message}).then(function(){b.disabled=false})}},"자동 누끼 따기"),
-    w.iconOrig?h("button",{class:"btn sm",onclick:function(){w.icon=w.iconOrig;delete w.iconOrig;delete w.cutout;w.thumb="";icPrev.src=imgSrc(w.icon);refreshDesk();icMsg.textContent="원래 사진으로 되돌렸어요.";markDirty("아이콘")}},"원래 사진으로 되돌리기"):null,
+    w.iconOrig?h("button",{class:"btn sm",onclick:function(){w.icon=w.iconOrig;delete w.iconOrig;delete w.cutout;w.thumb="";icPrev.src=imgSrc(w.icon);icPrev.hidden=!w.icon;refreshDesk();icMsg.textContent="원래 사진으로 되돌렸어요.";markDirty("아이콘")}},"원래 사진으로 되돌리기"):null,
     icMsg));
   dnd(drop,function(fs){doIcon(fs[0])});
   form.appendChild(h("div",{class:"field"},h("span",{class:"lbl",text:"바탕화면 아이콘 (누끼 이미지)"}),drop));
