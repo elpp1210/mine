@@ -911,6 +911,8 @@ const borderColor = (opts.borderColor != null ? opts.borderColor : 'rgba(0,0,0,0
     sporeBtn.setAttribute('aria-pressed','false');
   }
   sporeBtn.addEventListener('click', () => { running ? stop() : start(); });
+  /* on by default when the site opens */
+  requestAnimationFrame(() => { if (!running) start(); });
 })();
 
 /* ---------- boot ---------- */
