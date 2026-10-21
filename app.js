@@ -255,7 +255,7 @@ document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var t
 
 /* ---------- work window ---------- */
 function openWork(id){
-  var w=DATA.works.find(function(x){return x.id===id});if(!w)return;
+  var w=DATA.works.find(function(x){return x.id===id});if(!w)return;gcWork(w);
   var pics=(w.images||[]).slice();var cutIdx=-1;
   if(w.icon&&!pics.length){pics.push({src:w.icon,caption:""});cutIdx=0}
   var defCap=[w.title,w.year,w.medium,w.size].filter(Boolean).join(", ");
@@ -441,9 +441,14 @@ function drawWorks(main){
   if(heavy){var lb=h("button",{class:"btn sm primary"},"가볍게 만들기"),lm=h("span",{text:"바탕화면 아이콘 "+heavy+"개가 원본 사진이라 무거워요. 작은 썸네일을 만들어 두면 첫 화면이 빨리 떠요."});
     lb.addEventListener("click",function(){lightenAll(lb,lm,function(){renderDesk()})});
     main.appendChild(h("div",{class:"notice",style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},lm,lb))}
+  var vbar=h("div",{class:"notice",style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},
+    h("span",{text:VIEWS.home!=null?"홈페이지 방문 "+VIEWS.home.toLocaleString()+"회 · 작업별 조회수는 목록의 연도 옆에 있어요.":"방문·조회수를 불러오는 중…"}),
+    h("a",{class:"btn sm",href:GC,target:"_blank",rel:"noopener"},"자세한 통계 보기"));
+  main.appendChild(vbar);
+  if(VIEWS.home==null)loadViews().then(function(){if(main.isConnected)openAdminRefresh()},function(){var sp=vbar.querySelector("span");if(sp)sp.textContent="방문·조회수를 불러오지 못했어요. GoatCounter 설정에서 ‘Allow adding visitor counts on your website’를 켰는지 확인해 주세요. 자세한 통계는 오른쪽 버튼에서 볼 수 있어요."});
   var list=h("div",{class:"wk-list"});
   DATA.works.forEach(function(w){list.appendChild(h("button",{class:"wk-item","aria-current":w.id===admSel?"true":"false",onclick:function(){admSel=w.id;rerender()}},
-    h("img",{src:sized(w.icon,80),alt:""}),h("span",{class:"t"},w.title||"제목 없음",h("small",{text:w.year||"—"}))))});
+    h("img",{src:sized(w.icon,80),alt:""}),h("span",{class:"t"},w.title||"제목 없음",h("small",{text:(w.year||"—")+(VIEWS[w.id]!=null?" · 조회 "+VIEWS[w.id].toLocaleString():"")}))))});
   list.appendChild(h("button",{class:"btn sm",style:"margin:8px 6px 0;align-self:flex-start",onclick:function(){
     var w={id:uid(),title:"새 작업",year:String(new Date().getFullYear()),medium:"",size:"",desc:"",icon:"",images:[],scale:1,x:.35+Math.random()*.3,y:.3+Math.random()*.3};
     DATA.works.push(w);admSel=w.id;place[w.id]={fx:w.x,fy:w.y};if(narrow)gridPlace();renderDesk();markDirty("작업 추가");rerender()}},"+ 새 작업"));
@@ -648,7 +653,7 @@ function openLogin(){
   inp.addEventListener("keydown",function(e){if(e.key==="Enter")go()});
   function go(){var k=inp.value.trim();if(!k){msg.textContent="열쇠를 붙여 넣어 주세요.";return}
     btn.disabled=true;msg.textContent="확인하는 중…";GH.token=k;
-    ghLoad().then(function(){try{localStorage.setItem("byunjiwon-admin-key",k)}catch(e){}
+    ghLoad().then(function(){try{localStorage.setItem("byunjiwon-admin-key",k);localStorage.setItem("skipgc","t")}catch(e){}
       canEdit=true;adminBtn.hidden=false;refreshAll();closeWin("login");openAdmin()})
     .catch(function(e){GH.token=null;btn.disabled=false;
       msg.textContent=e.status===401?"열쇠가 틀렸거나 만료됐어요. 다시 복사해 붙여 넣어 주세요.":e.status===404||e.status===403?"이 열쇠로는 elpp1210/mine 저장소에 들어갈 수 없어요. 저장소 선택과 Contents 권한을 확인해 주세요.":"확인하지 못했어요: "+e.message})}
@@ -915,8 +920,21 @@ const borderColor = (opts.borderColor != null ? opts.borderColor : 'rgba(0,0,0,0
   requestAnimationFrame(() => { if (!running) start(); });
 })();
 
+/* ---------- visit counts (GoatCounter) ---------- */
+var GC="https://elpp1210.goatcounter.com";
+function gcSkip(){try{return !!localStorage.getItem("byunjiwon-admin-key")||localStorage.getItem("skipgc")==="t"}catch(e){return false}}
+function gcLoad(){if(gcSkip()||/^(localhost|127\.)/.test(location.hostname))return;
+  var sc=document.createElement("script");sc.async=true;sc.src="https://gc.zgo.at/count.js";sc.setAttribute("data-goatcounter",GC+"/count");document.head.appendChild(sc)}
+function gcWork(w){if(gcSkip())return;var go=function(){try{window.goatcounter.count({path:"/work/"+w.id,title:w.title||w.id})}catch(e){}};
+  if(window.goatcounter&&window.goatcounter.count)go();else setTimeout(function(){if(window.goatcounter&&window.goatcounter.count)go()},1500)}
+var VIEWS={},viewsLoaded=null;
+function gcCount(path){return fetch(GC+"/counter/"+encodeURIComponent(path)+".json",{cache:"no-store"}).then(function(r){if(r.status===404)return 0;if(!r.ok)throw r.status;return r.json().then(function(j){return parseInt(String(j.count).replace(/[^0-9]/g,""),10)||0})})}
+function loadViews(){if(viewsLoaded)return viewsLoaded;
+  viewsLoaded=gcCount("/").then(function(n){VIEWS.home=n;return Promise.all(DATA.works.map(function(w){return gcCount("/work/"+w.id).then(function(c){VIEWS[w.id]=c},function(){})}))}).then(function(){return VIEWS},function(e){viewsLoaded=null;throw e});
+  return viewsLoaded}
+
 /* ---------- boot ---------- */
-applyBg();renderName();
+applyBg();renderName();gcLoad();
 fetch("content/site.json",{cache:"no-cache"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){DATA=normalize(d)}).catch(function(){DATA=normalize(DATA)}).then(function(){
   applyBg();renderName();
   requestAnimationFrame(function(){initPlaces();renderDesk();

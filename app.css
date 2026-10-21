@@ -150,6 +150,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 .adm-status{flex:1;font-size:12.5px;color:var(--ink-soft);min-width:160px}
 .adm-status.err{color:var(--danger)}
 .adm-status.good{color:var(--ok)}
+a.btn{text-decoration:none;color:inherit;display:inline-block}
 .btn{border:1px solid var(--line);background:var(--paper);padding:6px 12px;border-radius:7px;font-size:13px;cursor:pointer;white-space:nowrap}
 .btn:hover{border-color:color-mix(in srgb,var(--ink) 30%,transparent)}
 .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
