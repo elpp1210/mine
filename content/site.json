@@ -20,19 +20,31 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/25ac258b-76f8-47a7-a499-3e701bfee765",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w01-0-31tv.webp",
+          "sm": "images/photos/w01-0-31tv-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/25ac258b-76f8-47a7-a499-3e701bfee765"
         },
         {
           "src": "https://github.com/user-attachments/assets/227aac36-918d-4608-b0c6-18928592f906",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w01-1-jmy7.webp",
+          "sm": "images/photos/w01-1-jmy7-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/227aac36-918d-4608-b0c6-18928592f906"
         },
         {
           "src": "https://github.com/user-attachments/assets/9e5e9f8b-cbff-490e-bc2e-e9c349ecf101",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w01-2-vphw.webp",
+          "sm": "images/photos/w01-2-vphw-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/9e5e9f8b-cbff-490e-bc2e-e9c349ecf101"
         },
         {
           "src": "https://github.com/user-attachments/assets/cc932b31-6b8d-4f03-a419-5e11cadd5767",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w01-3-kce0.webp",
+          "sm": "images/photos/w01-3-kce0-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/cc932b31-6b8d-4f03-a419-5e11cadd5767"
         }
       ],
       "scale": 5.95,
@@ -56,19 +68,31 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/ac4292ed-c6c7-451c-acbc-f72a663ab3e5",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w02-0-9fey.webp",
+          "sm": "images/photos/w02-0-9fey-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/ac4292ed-c6c7-451c-acbc-f72a663ab3e5"
         },
         {
           "src": "https://github.com/user-attachments/assets/3a1867b2-901b-4306-a0ec-a3414b997dbc",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w02-1-nald.webp",
+          "sm": "images/photos/w02-1-nald-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/3a1867b2-901b-4306-a0ec-a3414b997dbc"
         },
         {
           "src": "https://github.com/user-attachments/assets/07bcd990-c1ee-46ed-96a8-c4194838a13f",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w02-2-5kg1.webp",
+          "sm": "images/photos/w02-2-5kg1-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/07bcd990-c1ee-46ed-96a8-c4194838a13f"
         },
         {
           "src": "https://github.com/user-attachments/assets/2da05a42-eacd-4756-bad0-3c082128b7c8",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w02-3-76lj.webp",
+          "sm": "images/photos/w02-3-76lj-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/2da05a42-eacd-4756-bad0-3c082128b7c8"
         }
       ],
       "scale": 1.9,
@@ -92,15 +116,24 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/bc241a02-592d-440e-a7ab-1098f8aa3223",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w03-0-mkwx.webp",
+          "sm": "images/photos/w03-0-mkwx-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/bc241a02-592d-440e-a7ab-1098f8aa3223"
         },
         {
           "src": "https://github.com/user-attachments/assets/37aca1a1-ada5-4dcb-93e8-5c33b3f8177b",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w03-1-1zrb.webp",
+          "sm": "images/photos/w03-1-1zrb-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/37aca1a1-ada5-4dcb-93e8-5c33b3f8177b"
         },
         {
           "src": "https://github.com/user-attachments/assets/2740ca37-de6b-44aa-8390-68a45252d128",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w03-2-fzh2.webp",
+          "sm": "images/photos/w03-2-fzh2-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/2740ca37-de6b-44aa-8390-68a45252d128"
         }
       ],
       "scale": 1.95,
@@ -123,7 +156,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/38462cb7-8f69-46a7-85ca-6d91e5242bb6",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w04-0-k0uj.webp",
+          "sm": "images/photos/w04-0-k0uj-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/38462cb7-8f69-46a7-85ca-6d91e5242bb6"
         }
       ],
       "scale": 1.25,
@@ -147,7 +183,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/d00afcb8-0967-4f4e-8c37-f25a3d8f4775",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w05-0-f2sj.webp",
+          "sm": "images/photos/w05-0-f2sj-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/d00afcb8-0967-4f4e-8c37-f25a3d8f4775"
         }
       ],
       "scale": 0.7,
@@ -171,11 +210,17 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/c8c9eadd-41dc-41d9-88d2-e271d889da4f",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w06-0-np17.webp",
+          "sm": "images/photos/w06-0-np17-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/c8c9eadd-41dc-41d9-88d2-e271d889da4f"
         },
         {
           "src": "https://github.com/user-attachments/assets/cebd4a1c-3e45-4b1d-9d46-52428190a1ae",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w06-1-8plk.webp",
+          "sm": "images/photos/w06-1-8plk-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/cebd4a1c-3e45-4b1d-9d46-52428190a1ae"
         }
       ],
       "scale": 1.85,
@@ -198,11 +243,17 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/97382e99-2410-4211-ad29-460bcceee7b2",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w07-0-bxjp.webp",
+          "sm": "images/photos/w07-0-bxjp-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/97382e99-2410-4211-ad29-460bcceee7b2"
         },
         {
           "src": "https://github.com/user-attachments/assets/934c6f65-f63f-4751-9cb9-8522ae464476",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w07-1-08b9.webp",
+          "sm": "images/photos/w07-1-08b9-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/934c6f65-f63f-4751-9cb9-8522ae464476"
         }
       ],
       "scale": 1.55,
@@ -226,7 +277,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/12797876-9ec9-44e0-9263-6d10cf621c2c",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w08-0-zcyx.webp",
+          "sm": "images/photos/w08-0-zcyx-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/12797876-9ec9-44e0-9263-6d10cf621c2c"
         }
       ],
       "scale": 1,
@@ -249,7 +303,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/41723346-23fc-403d-aebe-a678f8c0bcef",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w09-0-k9yz.webp",
+          "sm": "images/photos/w09-0-k9yz-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/41723346-23fc-403d-aebe-a678f8c0bcef"
         }
       ],
       "scale": 3.45,
@@ -273,11 +330,17 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/8235e04a-fcf7-465d-bae4-b2992e06a524",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w10-0-h2iu.webp",
+          "sm": "images/photos/w10-0-h2iu-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/8235e04a-fcf7-465d-bae4-b2992e06a524"
         },
         {
           "src": "https://github.com/user-attachments/assets/fa5c4b47-7fe7-4501-af04-c090316a28f2",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w10-1-nshz.webp",
+          "sm": "images/photos/w10-1-nshz-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/fa5c4b47-7fe7-4501-af04-c090316a28f2"
         }
       ],
       "scale": 1,
@@ -300,11 +363,17 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/bce3cd10-9728-4d06-bf8a-02b27f5f2d5f",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w11-0-1b6b.webp",
+          "sm": "images/photos/w11-0-1b6b-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/bce3cd10-9728-4d06-bf8a-02b27f5f2d5f"
         },
         {
           "src": "https://github.com/user-attachments/assets/5f12e589-a887-4a18-8b2c-0e8a4596f70f",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w11-1-kt90.webp",
+          "sm": "images/photos/w11-1-kt90-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/5f12e589-a887-4a18-8b2c-0e8a4596f70f"
         }
       ],
       "scale": 1,
@@ -327,15 +396,24 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/a35a6710-e5dd-4ec4-8665-109b7be2b7a9",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w12-0-ykqu.webp",
+          "sm": "images/photos/w12-0-ykqu-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/a35a6710-e5dd-4ec4-8665-109b7be2b7a9"
         },
         {
           "src": "https://github.com/user-attachments/assets/4346329e-c2a4-4e5b-ab5d-70cd61759e43",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w12-1-o6r9.webp",
+          "sm": "images/photos/w12-1-o6r9-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/4346329e-c2a4-4e5b-ab5d-70cd61759e43"
         },
         {
           "src": "https://github.com/user-attachments/assets/7d9ba344-3402-4223-99fe-38bd1250ce52",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w12-2-a1bu.webp",
+          "sm": "images/photos/w12-2-a1bu-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/7d9ba344-3402-4223-99fe-38bd1250ce52"
         }
       ],
       "scale": 2.05,
@@ -359,11 +437,17 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/bbde0765-e890-4e66-9605-44de4a28fd57",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w13-0-f9rc.webp",
+          "sm": "images/photos/w13-0-f9rc-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/bbde0765-e890-4e66-9605-44de4a28fd57"
         },
         {
           "src": "https://github.com/user-attachments/assets/07e2cf46-fbd2-4fc4-8e97-db10b83ab7ac",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w13-1-lep7.webp",
+          "sm": "images/photos/w13-1-lep7-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/07e2cf46-fbd2-4fc4-8e97-db10b83ab7ac"
         }
       ],
       "scale": 1.35,
@@ -387,7 +471,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/90d86ddf-e4f8-4100-900e-276ec7fc4b11",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w14-0-aqj4.webp",
+          "sm": "images/photos/w14-0-aqj4-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/90d86ddf-e4f8-4100-900e-276ec7fc4b11"
         }
       ],
       "scale": 1,
@@ -410,11 +497,17 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/67ebca73-8745-431f-b871-af085b86cda9",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w15-0-5bc1.webp",
+          "sm": "images/photos/w15-0-5bc1-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/67ebca73-8745-431f-b871-af085b86cda9"
         },
         {
           "src": "https://github.com/user-attachments/assets/e075a9a9-b371-4df8-8d32-5b9d3e85b196",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w15-1-ucl6.webp",
+          "sm": "images/photos/w15-1-ucl6-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/e075a9a9-b371-4df8-8d32-5b9d3e85b196"
         }
       ],
       "scale": 2.1,
@@ -438,7 +531,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/34a725f7-7cbc-4bcd-be77-01a6e1a35ec4",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w16-0-507f.webp",
+          "sm": "images/photos/w16-0-507f-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/34a725f7-7cbc-4bcd-be77-01a6e1a35ec4"
         }
       ],
       "scale": 1,
@@ -461,19 +557,31 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/c1b4c717-a58b-4f5a-807d-56ddd88d78f7",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w17-0-5kw8.webp",
+          "sm": "images/photos/w17-0-5kw8-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/c1b4c717-a58b-4f5a-807d-56ddd88d78f7"
         },
         {
           "src": "https://github.com/user-attachments/assets/d2f716aa-4d35-4a94-81a1-f191a7f01030",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w17-1-mykn.webp",
+          "sm": "images/photos/w17-1-mykn-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/d2f716aa-4d35-4a94-81a1-f191a7f01030"
         },
         {
           "src": "https://github.com/user-attachments/assets/a048ee2d-2613-4fd7-b10f-9fbd8759c47d",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w17-2-ocez.webp",
+          "sm": "images/photos/w17-2-ocez-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/a048ee2d-2613-4fd7-b10f-9fbd8759c47d"
         },
         {
           "src": "https://github.com/user-attachments/assets/f9aac947-4509-452f-a5b4-ceb9706d1b96",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w17-3-y5gd.webp",
+          "sm": "images/photos/w17-3-y5gd-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/f9aac947-4509-452f-a5b4-ceb9706d1b96"
         }
       ],
       "scale": 1.65,
@@ -497,7 +605,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/80a36d83-f0bb-4161-ad23-911410d04f47",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w18-0-wevo.webp",
+          "sm": "images/photos/w18-0-wevo-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/80a36d83-f0bb-4161-ad23-911410d04f47"
         }
       ],
       "scale": 1.4,
@@ -521,19 +632,31 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/562f76d3-ad76-4ed3-a2dd-8e386eb24704",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w19-0-57lq.webp",
+          "sm": "images/photos/w19-0-57lq-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/562f76d3-ad76-4ed3-a2dd-8e386eb24704"
         },
         {
           "src": "https://github.com/user-attachments/assets/65d61745-d4c7-4480-9364-31b7e81b7541",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w19-1-wdf6.webp",
+          "sm": "images/photos/w19-1-wdf6-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/65d61745-d4c7-4480-9364-31b7e81b7541"
         },
         {
           "src": "https://github.com/user-attachments/assets/15216279-ba8f-4fbb-9836-048924ae9118",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w19-2-6m87.webp",
+          "sm": "images/photos/w19-2-6m87-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/15216279-ba8f-4fbb-9836-048924ae9118"
         },
         {
           "src": "https://github.com/user-attachments/assets/284e1ad4-d1a3-46c3-9f48-222065af371c",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w19-3-wiv2.webp",
+          "sm": "images/photos/w19-3-wiv2-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/284e1ad4-d1a3-46c3-9f48-222065af371c"
         }
       ],
       "scale": 2.2,
@@ -557,19 +680,31 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/b0c1b136-42aa-4358-96c6-530d052823db",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w20-0-jqd1.webp",
+          "sm": "images/photos/w20-0-jqd1-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/b0c1b136-42aa-4358-96c6-530d052823db"
         },
         {
           "src": "https://github.com/user-attachments/assets/ead8961e-eaef-4c94-9cad-7ec1bcccd25c",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w20-1-4jp8.webp",
+          "sm": "images/photos/w20-1-4jp8-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/ead8961e-eaef-4c94-9cad-7ec1bcccd25c"
         },
         {
           "src": "https://github.com/user-attachments/assets/0f177fed-0846-472e-8560-4775f1689c27",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w20-2-rj7p.webp",
+          "sm": "images/photos/w20-2-rj7p-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/0f177fed-0846-472e-8560-4775f1689c27"
         },
         {
           "src": "https://github.com/user-attachments/assets/179d90f3-adbc-4bfb-a290-3a89c9628f94",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w20-3-vwr7.webp",
+          "sm": "images/photos/w20-3-vwr7-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/179d90f3-adbc-4bfb-a290-3a89c9628f94"
         }
       ],
       "scale": 2.25,
@@ -593,7 +728,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/0618b786-c64f-442c-897d-e45dc68d9d28",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w21-0-v3qq.webp",
+          "sm": "images/photos/w21-0-v3qq-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/0618b786-c64f-442c-897d-e45dc68d9d28"
         }
       ],
       "scale": 1,
@@ -616,7 +754,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/016435c0-e4fd-43e6-986e-c33093aba7a1",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w22-0-znpx.webp",
+          "sm": "images/photos/w22-0-znpx-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/016435c0-e4fd-43e6-986e-c33093aba7a1"
         }
       ],
       "scale": 1.05,
@@ -640,7 +781,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/3ebb9ae8-1ec6-4bed-b27f-bcf1fc11eacc",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w23-0-uuo5.webp",
+          "sm": "images/photos/w23-0-uuo5-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/3ebb9ae8-1ec6-4bed-b27f-bcf1fc11eacc"
         }
       ],
       "scale": 1.05,
@@ -663,15 +807,24 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/6c0ca765-f44d-406a-ad9d-48175641c712",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w24-0-24n0.webp",
+          "sm": "images/photos/w24-0-24n0-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/6c0ca765-f44d-406a-ad9d-48175641c712"
         },
         {
           "src": "https://github.com/user-attachments/assets/80ca990e-d9a1-4cb5-b09a-29fb3e545a56",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w24-1-jaiz.webp",
+          "sm": "images/photos/w24-1-jaiz-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/80ca990e-d9a1-4cb5-b09a-29fb3e545a56"
         },
         {
           "src": "https://github.com/user-attachments/assets/d9c95c3d-74df-422c-adb9-c3f5e8e8c49d",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w24-2-6naw.webp",
+          "sm": "images/photos/w24-2-6naw-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/d9c95c3d-74df-422c-adb9-c3f5e8e8c49d"
         }
       ],
       "scale": 1.4,
@@ -695,7 +848,10 @@
       "images": [
         {
           "src": "https://github.com/user-attachments/assets/52169802-1826-48da-bb03-8011c87f9bc3",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/w25-0-qqb8.webp",
+          "sm": "images/photos/w25-0-qqb8-s.webp",
+          "optOf": "https://github.com/user-attachments/assets/52169802-1826-48da-bb03-8011c87f9bc3"
         }
       ],
       "scale": 1.1,
@@ -718,19 +874,31 @@
       "images": [
         {
           "src": "images/uploads/2026-10-19-1vhyma.jpg",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/wmvfedklimqv8-0-2wf6.webp",
+          "sm": "images/photos/wmvfedklimqv8-0-2wf6-s.webp",
+          "optOf": "images/uploads/2026-10-19-1vhyma.jpg"
         },
         {
           "src": "images/uploads/2026-10-19-fo5grc.jpg",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/wmvfedklimqv8-1-7umy.webp",
+          "sm": "images/photos/wmvfedklimqv8-1-7umy-s.webp",
+          "optOf": "images/uploads/2026-10-19-fo5grc.jpg"
         },
         {
           "src": "images/uploads/2026-10-19-q59833.jpg",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/wmvfedklimqv8-2-8rcd.webp",
+          "sm": "images/photos/wmvfedklimqv8-2-8rcd-s.webp",
+          "optOf": "images/uploads/2026-10-19-q59833.jpg"
         },
         {
           "src": "images/uploads/2026-10-19-u4je6p.jpg",
-          "caption": ""
+          "caption": "",
+          "opt": "images/photos/wmvfedklimqv8-3-9f29.webp",
+          "sm": "images/photos/wmvfedklimqv8-3-9f29-s.webp",
+          "optOf": "images/uploads/2026-10-19-u4je6p.jpg"
         }
       ],
       "scale": 2.65,
